@@ -1,42 +1,43 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.layout{min-height:100%;display:grid;grid-template-rows:auto 1fr auto}
+
+.nav{
+  display:flex; gap:16px; align-items:center; justify-content:space-between;
+  padding:12px 16px; border-bottom:1px solid var(--border); background:#0f1220a0; backdrop-filter: blur(6px);
+}
+.brand{font-weight:800; letter-spacing:.3px}
+.links a{margin:0 8px; padding:6px 10px; border-radius:10px}
+.links a.active{background:#151823;border:1px solid var(--border)}
+.links a:hover{background:#121622}
+
+.container{padding:24px; display:grid; place-items:start; max-width:1100px; margin:0 auto}
+.footer{padding:12px 16px; border-top:1px solid var(--border); opacity:.8; text-align:center}
+
+.card{
+  width:100%; background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+  border:1px solid var(--border); border-radius:18px; padding:20px; box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.grid{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+.btn{
+  border:1px solid var(--border); background:#151823; padding:10px 14px; border-radius:12px;
+  font-weight:600; transition: transform .05s ease, box-shadow .2s ease, border-color .2s ease;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
+.btn:hover{ transform:translateY(-1px); border-color:#2a3140; box-shadow:0 8px 18px rgba(0,0,0,.35) }
+.btn.primary{ background: linear-gradient(135deg, var(--accent), var(--accent2)); color:#0b0c10; border:none }
+.btn.small{ padding:6px 10px; font-size:.9rem }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.cards{display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:12px; margin-top:16px}
+.player-card{
+  background:#0f1220; border:1px solid var(--border); border-radius:14px; padding:14px;
 }
+.player-card header{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px}
+.player-card .role{font-size:.85rem; color:var(--muted)}
+.player-card .rating{font-size:1.2rem; margin:8px 0 12px; font-weight:700}
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.table{width:100%; border-collapse:collapse; margin-top:12px}
+.table th,.table td{border-bottom:1px solid var(--border); padding:10px 8px; text-align:left}
+.meta{list-style:none; padding:0; margin:0 0 12px 0}
+.meta li{margin:6px 0}
+.placeholder{
+  height:140px; display:grid; place-items:center; border:1px dashed var(--border); border-radius:12px; color:var(--muted); background:#0f1220;
 }
