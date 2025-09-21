@@ -1,68 +1,26 @@
+
+ruta = "D:/10mo Semestre/reactivas/proyecto-reactivas/backend/db_fixed.json"
+output = "D:/10mo Semestre/reactivas/proyecto-reactivas/backend/db_final.json"
 import json
 
-def rename_keys_in_json(file_path: str, mapping: dict, output_path: str = None):
-    """
-    Renombra claves en un JSON según un mapeo dado.
+# Cargar el JSON original
+with open(ruta, "r", encoding="utf-8") as f:
+    data = json.load(f)
 
-    Args:
-        file_path (str): ruta del archivo JSON original
-        mapping (dict): diccionario con {clave_vieja: clave_nueva}
-        output_path (str): ruta donde guardar el JSON modificado.
-                           Si es None, sobreescribe el archivo original.
-    """
-    with open(file_path, "r", encoding="utf-8") as f:
-        data = json.load(f)
+# Crear un índice: torneo -> lista de player IDs
+tournament_to_players = {}
+for player in data["players"]:
+    t_name = player["tournament"]
+    t_id = player["id"]
+    tournament_to_players.setdefault(t_name, []).append(t_id)
 
-    def rename_in_dict(d: dict):
-        for old_key, new_key in mapping.items():
-            if old_key in d:
-                d[new_key] = d.pop(old_key)
-        return d
+# Agregar "players" a cada torneo en la lista de tournaments
+for tournament in data.get("tournaments", []):
+    t_name = tournament["tournament"]
+    tournament["players"] = tournament_to_players.get(t_name, [])
 
-    # si el json tiene listas (ej: "players")
-    if isinstance(data, dict):
-        for key, value in data.items():
-            if isinstance(value, list):
-                data[key] = [rename_in_dict(item) if isinstance(item, dict) else item for item in value]
-            elif isinstance(value, dict):
-                data[key] = rename_in_dict(value)
+# Guardar el archivo actualizado
+with open(output, "w", encoding="utf-8") as f:
+    json.dump(data, f, indent=4, ensure_ascii=False)
 
-    # guardar
-    if output_path is None:
-        output_path = file_path
-
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
-
-    print(f"Archivo guardado en {output_path}")
-
-ruta = "D:/10mo Semestre/reactivas/proyecto-reactivas/backend/db.json"
-output = "D:/10mo Semestre/reactivas/proyecto-reactivas/backend/db_new_keys.json"
-mapping = {
-    "Tournament": "tournament",
-    "Stage": "stages",
-    "Match Type": "match_type",
-    "Player": "name",
-    "Teams": "team",
-    "Agents": "agents",
-    "Rounds Played": "rounds_played",
-    "Rating": "rating",
-    "Average Combat Score": "acs",
-    "Kills:Deaths": "kd",
-    "Kill, Assist, Trade, Survive %": "kast",
-    "Average Damage Per Round": "adr",
-    "Kills Per Round": "kpr",
-    "Assists Per Round": "apr",
-    "First Kills Per Round": "fkpr",
-    "First Deaths Per Round": "fdpr",
-    "Headshot %": "hs",
-    "Clutch Success %": "clutch_success",
-    "Clutches (won/played)": "clutches",
-    "Maximum Kills in a Single Map": "max_kills",
-    "Kills": "kills",
-    "Deaths": "deaths",
-    "Assists": "assists",
-    "First Kills": "fk",
-    "First Deaths": "fd",
-}
-rename_keys_in_json(ruta, mapping, output)
+print("db.json actualizado: cada torneo ahora tiene la lista de players.")

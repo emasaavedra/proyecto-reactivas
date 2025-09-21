@@ -2,9 +2,8 @@ import type { Player } from "../types/Player";
 
 const jugador = (player: Player) => (
     <div>
-        <strong>{player.name}</strong>
-        <div>{player.team}</div>
-        <div>{player.rating}</div>
+        <div><strong>{player.team}</strong> {player.name}</div>
+        <div>Rating: {player.rating}</div>
         <br />
     </div>
 );

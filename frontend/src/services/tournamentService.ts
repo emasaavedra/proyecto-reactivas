@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { Tournament } from "../types/Tournament";
-const baseUrl = "http://localhost:3001/tournament";
+const baseUrl = "http://localhost:3001/tournaments";
 
 const getAllTournaments = async (): Promise<Tournament[]> => {
   const response = await axios.get<Tournament[]>(baseUrl);

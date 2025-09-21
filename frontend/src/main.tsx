@@ -9,6 +9,7 @@ import Leaderboard from "./routes/Leaderboard.tsx";
 import Profile from "./routes/Profile.tsx";
 import Player_list from "./Player_list.tsx";
 import "./index.css";
+import Tournament_list from "./Tournament_list.tsx";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
       { path: "/leaderboard", element: <Leaderboard /> },
       { path: "/profile", element: <Profile /> },
       { path: "/players", element: <Player_list /> },
+      { path: "/tournaments", element: <Tournament_list /> }
     ],
   },
 ]);

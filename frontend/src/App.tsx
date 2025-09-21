@@ -13,6 +13,7 @@ export default function App() {
           <NavLink to="/leaderboard">Leaderboard</NavLink>
           <NavLink to="/profile">Profile</NavLink>
           <NavLink to="/players">Players</NavLink>
+          <NavLink to="/tournaments">Torneos</NavLink>
         </nav>
       </header>
       <main className="container">
