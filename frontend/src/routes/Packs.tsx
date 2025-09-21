@@ -20,7 +20,9 @@ export default function Packs() {
   return (
     <section className="card">
       <h1>Open a Pack</h1>
+      
       <p>Get 3 random player cards. (Demo data for now.)</p>
+      
       <button className="btn primary" onClick={openPack}>Open</button>
 
       {cards && (
