@@ -6,6 +6,7 @@ export default function App() {
     <div className="layout">
       <header className="nav">
         <div className="brand">Valorant Fantasy ⚡</div>
+
         <nav className="links">
           <NavLink to="/" end>Home</NavLink>
           <NavLink to="/packs">Packs</NavLink>
@@ -14,12 +15,10 @@ export default function App() {
           <NavLink to="/profile">Profile</NavLink>
         </nav>
       </header>
-      <main className="container">
-        <Outlet />
-      </main>
-      <footer className="footer">
-        <small>React + TS + Vite • HMR on save</small>
-      </footer>
+
+      <main className="container"> <Outlet /> </main>
+
+      <footer className="footer"> <small>Valorant Teams ⚡</small> </footer>
     </div>
   );
 }
