@@ -12,6 +12,7 @@ export default function App() {
           <NavLink to="/team">My Team</NavLink>
           <NavLink to="/leaderboard">Leaderboard</NavLink>
           <NavLink to="/profile">Profile</NavLink>
+          <NavLink to="/players">Players</NavLink>
         </nav>
       </header>
       <main className="container">
