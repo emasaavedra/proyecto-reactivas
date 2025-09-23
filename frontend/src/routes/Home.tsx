@@ -1,16 +1,16 @@
 export default function Home() {
   return (
     <section className="card">
-      <h1>Welcome 👋</h1>
+      <h1>Bienvenido a ValoCards</h1>
       <p>
-        Build your fantasy team with real pro players. Open packs, assemble your lineup,
-        and climb the leaderboard as real matches play out.
+        Construye el equipo de tus sueños con jugadores profesionales de Valorant. Abre sobres, arma tu equipo
+        y gana puntos a medida que se desarrollan los partidos reales.
       </p>
       <div className="grid">
-        <a className="btn" href="/packs">Open a Pack</a>
-        <a className="btn" href="/team">Manage Team</a>
-        <a className="btn" href="/leaderboard">View Leaderboard</a>
-        <a className="btn" href="/profile">Your Profile</a>
+        <a className="btn" href="/packs">Abre un ValoPack</a>
+        <a className="btn" href="/team">Gestionar Equipo</a>
+        <a className="btn" href="/leaderboard">Ver Tabla de Clasificación</a>
+        <a className="btn" href="/profile">Tu Perfil</a>
       </div>
     </section>
   );
