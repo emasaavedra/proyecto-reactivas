@@ -1,10 +1,39 @@
-# proyecto-reactivas
-Repositorio para la realización del Proyecto para CC5003
+# 🃏 ValoFantasy
 
-# Equipo 135:
+Bienvenido a **ValoFantasy**, una aplicación para coleccionar cartas de jugadores profesionales de Valorant. Abre sobres, construye tu equipo de ensueño y compite con otros usuarios.
+
+## Equipo 135:
 - Pablo Benario
-- Emanuel Saavedra
+- Emanuel Saavedra  
 - Benjamín Ureta
+
+## Cómo ejecutar el proyecto
+
+Para ejecutar ValoFantasy necesitarás abrir **2 terminales** y ejecutar tanto el backend como el frontend:
+
+### Terminal 1 - Backend (JSON Server)
+```bash
+cd backend
+npx json-server --watch db.json --port 3001
+```
+
+### Terminal 2 - Frontend (React + Vite)
+```bash
+cd frontend
+npm run dev
+```
+
+## 📱 URLs de la aplicación
+
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:3001
+
+## ⚡ Características principales
+
+- 🃏 **Abrir Packs**: Obtén 5 cartas aleatorias de jugadores profesionales
+- 👥 **Base de datos completa**: Miles de jugadores de torneos VCT
+
+---
 
 # HITO 1 – Definición y primera versión del proyecto
 
