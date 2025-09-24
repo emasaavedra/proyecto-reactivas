@@ -5,20 +5,22 @@ export default function App() {
   return (
     <div className="layout">
       <header className="nav">
-        <div className="brand">Valorant Fantasy ⚡</div>
-
+        <NavLink to="/" end><div className="brand"> 🃏 ValoFantasy 🃏 </div></NavLink>
         <nav className="links">
-          <NavLink to="/" end>Home</NavLink>
-          <NavLink to="/packs">Packs</NavLink>
-          <NavLink to="/team">My Team</NavLink>
-          <NavLink to="/leaderboard">Leaderboard</NavLink>
-          <NavLink to="/profile">Profile</NavLink>
+          <NavLink to="/packs">ValoPacks</NavLink>
+          <NavLink to="/team">Mi Equipo</NavLink>
+          <NavLink to="/leaderboard">Tabla de Puntos</NavLink>
+          <NavLink to="/profile">Perfil</NavLink>
+          <NavLink to="/players">Lista de Jugadores</NavLink>
+          <NavLink to="/tournaments">Torneos</NavLink>
         </nav>
       </header>
-
-      <main className="container"> <Outlet /> </main>
-
-      <footer className="footer"> <small>Valorant Teams ⚡</small> </footer>
+      <main className="container">
+        <Outlet />
+      </main>
+      <footer className="footer">
+        <small></small>
+      </footer>
     </div>
   );
 }

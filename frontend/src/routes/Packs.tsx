@@ -1,28 +1,30 @@
 import { useState } from "react";
-
-type Card = { id: string; name: string; role: "Duelist" | "Initiator" | "Controller" | "Sentinel"; rating: number };
+import packsService from "../services/packsService";
+import packComponent from "../components/pack";
+import type { Pack } from "../types/Packs";
 
 export default function Packs() {
-  const [cards, setCards] = useState<Card[] | null>(null);
+  const [pack, setPack] = useState<Pack | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  // Placeholder "open pack" — replace later with backend call
-  const openPack = () => {
-    const demo: Card[] = [
-      { id: crypto.randomUUID(), name: "PRX f0rsakeN", role: "Duelist", rating: 92 },
-      { id: crypto.randomUUID(), name: "SEN TenZ", role: "Duelist", rating: 90 },
-      { id: crypto.randomUUID(), name: "LOUD saadhak", role: "Initiator", rating: 88 },
-      { id: crypto.randomUUID(), name: "FNATIC Boaster", role: "Controller", rating: 86 },
-      { id: crypto.randomUUID(), name: "TL Nats", role: "Sentinel", rating: 89 },
-    ];
-    setCards(demo.sort(() => 0.5 - Math.random()).slice(0, 3));
+  // Abrir pack usando el servicio real
+  const openPack = async () => {
+    setLoading(true);
+    setPack(null); // 🔥 LIMPIAR el pack anterior primero
+    try {
+      const newPack = await packsService.openDefaultPack();
+      setPack(newPack);
+    } catch (error) {
+      console.error("Error opening pack:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <section className="card">
       <h1>Open a Pack</h1>
-      
       <p>Get 3 random player cards. (Demo data for now.)</p>
-      
       <button className="btn primary" onClick={openPack}>Open</button>
 
       {cards && (
