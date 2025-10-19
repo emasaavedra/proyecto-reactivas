@@ -3,7 +3,7 @@
 Bienvenido a **ValoFantasy**, una aplicación para coleccionar cartas de jugadores profesionales de Valorant. Abre sobres, construye tu equipo de ensueño y compite con otros usuarios.
 
 ## Equipo 135:
-- Pablo Benario
+- ~~Pablo Benario~~ 💀💀💀
 - Emanuel Saavedra  
 - Benjamín Ureta
 
