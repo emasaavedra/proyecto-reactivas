@@ -12,11 +12,11 @@ export default interface IPlayer {
   acs: number;
   kd: number;
   kast: number;
-  adr: number;
+  adr: number | string;
   kpr: number;
   apr: number;
-  fkpr: number;
-  fdpr: number;
+  fkpr: number | string;
+  fdpr: number | string;
   hs: number;
   clutch_success: number;
   clutches: string;
