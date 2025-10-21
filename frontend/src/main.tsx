@@ -7,6 +7,7 @@ import Packs from "./routes/Packs.tsx";
 import MyTeam from "./routes/MyTeam.tsx";
 import Leaderboard from "./routes/Leaderboard.tsx";
 import Profile from "./routes/Profile.tsx";
+import Login from "./routes/Login";
 import Player_list from "./Player_list.tsx";
 import "./index.css";
 import Tournament_list from "./Tournament_list.tsx";
@@ -16,6 +17,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { path: "/", element: <Home /> },
+      { path: "/login", element: <Login /> },
       { path: "/packs", element: <Packs /> },
       { path: "/team", element: <MyTeam /> },
       { path: "/leaderboard", element: <Leaderboard /> },

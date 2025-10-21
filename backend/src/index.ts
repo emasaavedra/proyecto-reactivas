@@ -1,6 +1,10 @@
 import express, {Request, Response, NextFunction} from "express";
 import mongoose from "mongoose";
+import cors from "cors";
+import cookieParser from "cookie-parser"; // ← NUEVO
+import config from "./config/config"; // ← NUEVO
 import playersRouter from "./routes/players";
+import loginRouter from "./routes/login"; // ← NUEVO
 
 const errorHandler = (
   error: { name: string; message: string },
@@ -9,7 +13,6 @@ const errorHandler = (
   next: NextFunction
 ) => {
   console.error(error.message);
-
   console.error(error.name);
   if (error.name === "CastError") {
     response.status(400).send({ error: "malformatted id" });
@@ -19,33 +22,38 @@ const errorHandler = (
   next(error);
 };
 
-
-
 const app = express();
-app.use(express.json());
-app.use(errorHandler);
 
-const PORT = 3001;
-const MONGO_URI = "mongodb://localhost:27017/valorantdb";
+// CORS con credenciales
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
+
+app.use(cookieParser()); // ← NUEVO - Debe ir ANTES de express.json()
+app.use(express.json());
 
 async function startServer() {
   try {
-    await mongoose.connect(MONGO_URI);
+    await mongoose.connect(config.MONGODB_URI);
     console.log("Connected to MongoDB");
 
     app.use("/api", playersRouter);
+    app.use("/api", loginRouter); // ← NUEVO
+    
     app.get("/", (req: Request, res: Response) => {
       res.send("<h1>Servidor funcionando correctamente :D</h1>");
     });
 
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+    app.use(errorHandler); // ← Mover al final
+
+    app.listen(config.PORT, () => {
+      console.log(`Server running on http://localhost:${config.PORT}`);
     });
   } catch (error) {
     console.error("Error al conectar a MongoDB:", error);
     process.exit(1);
   }
 }
-
 
 startServer();

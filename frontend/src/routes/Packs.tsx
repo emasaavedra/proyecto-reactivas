@@ -10,7 +10,7 @@ export default function Packs() {
   // Abrir pack usando el servicio real
   const openPack = async () => {
     setLoading(true);
-    setPack(null); // 🔥 LIMPIAR el pack anterior primero
+    setPack(null); 
     try {
       const newPack = await packsService.openDefaultPack();
       setPack(newPack);
