@@ -1,4 +1,4 @@
-export type Player = {
+export type IPlayer = {
     id: number,
     name: string,
     tournament: string,
@@ -25,4 +25,5 @@ export type Player = {
     assists: number,
     fk: number,
     fd: number,
+    photo: string
 };

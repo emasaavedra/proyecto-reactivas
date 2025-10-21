@@ -23,14 +23,6 @@ const errorHandler = (
 };
 
 const app = express();
-
-// CORS con credenciales
-app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true
-}));
-
-app.use(cookieParser()); // ← NUEVO - Debe ir ANTES de express.json()
 app.use(express.json());
 
 async function startServer() {
