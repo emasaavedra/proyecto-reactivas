@@ -1,6 +1,7 @@
 import express, {Request, Response, NextFunction} from "express";
 import mongoose from "mongoose";
 import playersRouter from "./routes/players";
+import cors from "cors";
 
 const errorHandler = (
   error: { name: string; message: string },
@@ -22,6 +23,9 @@ const errorHandler = (
 
 
 const app = express();
+app.use(cors({
+  origin: "http://localhost:5173"
+}));
 app.use(express.json());
 app.use(errorHandler);
 

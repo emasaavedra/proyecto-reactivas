@@ -1,0 +1,13 @@
+.player-list-container {
+  padding: 20px;
+  background-color: #1f2937; /* fondo gris oscuro */
+  min-height: 100vh;
+}
+
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  width: 100%;
+  margin-top: 20px;
+}
