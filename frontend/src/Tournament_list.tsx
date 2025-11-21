@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import tournamentService from "./services/tournamentService";
 import playersService from "./services/playersService";
 import type { Tournament } from "./types/Tournament";
-import type { Player } from "./types/Player";
+import type { IPlayer } from "./types/Player";
 import jugador from "./components/player";
 
 function Tournament_list() {
 	const [tournaments, setTournaments] = useState<Tournament[]>([]);
-	const [playersById, setPlayersById] = useState<{[key: number]: Player}>({});
+	const [playersById, setPlayersById] = useState<{[key: number]: IPlayer}>({});
 	const [openTournaments, setOpenTournaments] = useState<{[key: number]: boolean}>({});
 
 	useEffect(() => {
@@ -17,7 +17,7 @@ function Tournament_list() {
 
 			// Obtener todos los jugadores por ID
 			const allPlayerIds = Array.from(new Set(tournamentsData.flatMap(t => t.players)));
-			const playersMap: {[key: number]: Player} = {};
+			const playersMap: {[key: number]: IPlayer} = {};
 			for (const id of allPlayerIds) {
 				try {
 					const player = await playersService.getById(id);
@@ -60,7 +60,7 @@ function Tournament_list() {
 											.filter(Boolean)
 											.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))
 											.map(player => (
-												<div key={player.id}>{jugador(player)}</div>
+												<div key={player.id}>{jugador({player})}</div>
 											))
 									)}
 								</div>
