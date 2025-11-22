@@ -5,15 +5,13 @@ import "./Player_list.css";
 import usePlayerState from "./types/State";
 
 function Player_list() {
-  const { players, fetchPlayers, error } = usePlayerState(state => ({
-    players: state.players,
-    fetchPlayers: state.fetchPlayers,
-    error: state.error,
-  }));
+  const players = usePlayerState(state => state.players);
+  const fetchPlayers = usePlayerState(state => state.fetchPlayers);
+  const error = usePlayerState(state => state.error);
 
   useEffect(() => {
-    if (players.length === 0) fetchPlayers();
-  }, [fetchPlayers, players.length]);
+    if (players.length === 0) {fetchPlayers()};
+  }, [players.length]);
 
   return (
     <div className="player-list-container">

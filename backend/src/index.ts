@@ -23,6 +23,10 @@ const errorHandler = (
 };
 
 const app = express();
+app.use(cors({
+  origin: "http://localhost:5173", // o el puerto donde corre tu frontend
+  credentials: true
+}));
 app.use(express.json());
 
 async function startServer() {
