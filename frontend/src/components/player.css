@@ -1,4 +1,6 @@
 .player-card {
+  flex: 1 1 220px; /* o el ancho mínimo que quieras */
+  max-width: 260px;
   width: 220px;
   border-radius: 20px;
   overflow: hidden;
@@ -91,11 +93,8 @@
 }
 
 .players-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
-  padding: 20px;
-  justify-items: center; /* centra las cartas en cada celda */
-  background-color: #1f2937; /* fondo gris oscuro */
-  min-height: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: flex-start;
 }

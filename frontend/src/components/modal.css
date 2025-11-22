@@ -1,0 +1,61 @@
+.modal-backdrop {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: #222; padding: 2rem; border-radius: 8px; min-width: 300px; position: relative;
+}
+.modal-close {
+  position: absolute; top: 8px; right: 8px; background: none; border: none; font-size: 1.2rem; cursor: pointer;
+}
+
+.modal-content {
+  background: #222;
+  padding: 2rem;
+  border-radius: 8px;
+  min-width: 600px;      /* Más ancho */
+  max-width: 900px;      /* Opcional, para pantallas grandes */
+  width: 80vw;           /* Responsivo */
+  position: relative;
+}
+
+
+.modal-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  min-height: 280px; /* Ajusta según tu contenido */
+}
+
+.modal-body-flex {
+  display: flex;
+  align-items: stretch;
+  gap: 2rem;
+  min-height: 320px; /* Ajusta según tu preferencia */
+}
+
+.modal-body-flex img {
+  height: 100%;
+  /*max-height: 420px;      /* Limita el alto máximo */
+  width: auto;
+  /*max-width: 320px;       /* Limita el ancho máximo */
+  object-fit: contain;    /* No recorta la imagen */
+  border-radius: 12px;
+  background: #f3f3f3;
+  flex-shrink: 0;
+  display: block;
+}
+
+.stat-box {
+  display: inline-block;
+  padding: 0.4em 1em;
+  border-radius: 1em;
+  margin: 0.2em 0;
+  font-size: 1em;
+  background: #eee;
+  color: #111;
+  font-weight: normal;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
