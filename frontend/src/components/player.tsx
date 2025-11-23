@@ -1,22 +1,29 @@
 import type { IPlayer as PlayerType } from "../types/Player";
-import "./player.css"; // importamos la hoja de estilos
+import "./player.css";
 
 type Props = {
   player: PlayerType;
 };
 
+function safeNum(value: any, decimals = 2) {
+  const n = Number(value);
+  return isNaN(n) ? "0.00" : n.toFixed(decimals);
+}
+
 function Player({ player }: Props) {
-  // asignar clase según rating
+  // Asegurar rating seguro antes de compararlo:
+  const rating = Number(player.rating) || 0;
+
   let ratingClass = "";
-  if (player.rating >= 1.1) ratingClass = "gold";
-  else if (player.rating >= 1.0) ratingClass = "silver";
+  if (rating >= 1.1) ratingClass = "gold";
+  else if (rating >= 1.0) ratingClass = "silver";
   else ratingClass = "bronze";
 
   return (
     <div className={`player-card ${ratingClass}`}>
       <div className="player-image">
         <img src={`/${player.photo}`} alt={player.name} />
-        <div className="player-rating">{player.rating.toFixed(2)}</div>
+        <div className="player-rating">{safeNum(player.rating)}</div>
       </div>
 
       <div className="player-info">
@@ -24,12 +31,10 @@ function Player({ player }: Props) {
         <p className="player-team">{player.team}</p>
         <p className="player-team">{player.tournament}</p>
 
-        
-
         <div className="player-stats">
-          <span>ACS: {player.acs}</span>
-          <span>KD: {player.kd.toFixed(2)}</span>
-          <span>KPR: {player.kpr.toFixed(2)}</span>
+          <span>ACS: {safeNum(player.acs, 0)}</span>
+          <span>KD: {safeNum(player.kd)}</span>
+          <span>KPR: {safeNum(player.kpr)}</span>
         </div>
       </div>
     </div>

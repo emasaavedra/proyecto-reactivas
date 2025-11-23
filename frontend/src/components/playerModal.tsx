@@ -10,7 +10,7 @@ type Props = {
 function getStatRange(players: IPlayer[], stat: keyof IPlayer) {
     const values = players
         .map(p => Number(p[stat]))
-        .filter(v => !isNaN(v));
+        .filter(v => typeof v === "number" && !isNaN(v));
     if (values.length === 0) return { min: 0, max: 1 }
     return { min: Math.min(...values), max: Math.max(...values) };
 };
@@ -51,7 +51,9 @@ export default function PlayerModal({ player, tournamentPlayers, onClose }: Prop
                     </p>
                     {["rating", "acs", "kd", "kpr"].map(stat => {
                         const { min, max } = getStatRange(tournamentPlayers, stat as keyof IPlayer);
-                        const value = Number(player[stat as keyof IPlayer]) ?? 0;
+                        const raw = player[stat as keyof IPlayer];
+                        const value = typeof raw === "number" ? raw : Number(raw) || 0;
+
                         const color = getStatColor(value, min, max);
                         return (
                             <span

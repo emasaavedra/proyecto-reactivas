@@ -1,33 +1,45 @@
 import mongoose from "mongoose";
 import fs from "fs";
 import path from "path";
-import Player from "../models/player";
+import Player, { IPlayer } from "../models/player";
 import Tournament from "../models/tournaments";
+import ITournament from "../models/ITournament";
 
 const MONGO_URI = "mongodb://localhost:27017/valorantdb";
 
+type TipoJson = {
+  players: IPlayer[],
+  tournaments: ITournament[],
+}
+
 async function importData() {
   try {
-    // 1️⃣ Leer el JSON
     const filePath = path.join(__dirname, "../../jugadores_actualizado.json");
     const rawData = fs.readFileSync(filePath, "utf8");
-    const data = JSON.parse(rawData);
+    const data: TipoJson = JSON.parse(rawData);
 
-    // 2️⃣ Conectarse a Mongo
+    console.log(data.players[0]);
+
     await mongoose.connect(MONGO_URI);
     console.log("✅ Conectado a MongoDB");
 
-    // 3️⃣ Limpiar colecciones anteriores (opcional)
+    // Limpiar colecciones
     await Player.deleteMany({});
     await Tournament.deleteMany({});
     console.log("🧹 Colecciones limpiadas");
 
-    // 4️⃣ Insertar datos
-    await Player.insertMany(data.players);
-    await Tournament.insertMany(data.tournaments);
-    console.log("📦 Datos insertados correctamente");
+    // Insertar jugadores SIN _id
+    const cleanedPlayers = data.players.map(({ id, ...rest }) => ({
+      ...rest,
+      playerId: id // renombramos el id de tu JSON
+    }));
+    console.log(cleanedPlayers[0]);
+    await Player.insertMany(cleanedPlayers);
 
-    // 5️⃣ Cerrar conexión
+    // Insertar torneos
+    await Tournament.insertMany(data.tournaments);
+
+    console.log("📦 Datos insertados correctamente");
     await mongoose.connection.close();
     console.log("🔌 Conexión cerrada");
   } catch (error) {
@@ -35,5 +47,6 @@ async function importData() {
     process.exit(1);
   }
 }
+
 
 importData();

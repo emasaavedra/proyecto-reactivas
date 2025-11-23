@@ -1,5 +1,4 @@
 import axios from "axios";
-import type { IPlayer } from "../types/Player";
 
 const baseUrl = "http://localhost:3001/api/users";
 
@@ -14,10 +13,19 @@ export const addPlayersToUser = async (playerIds: number[]) => {
   );
 };
 
-export const getUserPlayers = async (): Promise<IPlayer[]> => {
+export const getUserPlayers = async (): Promise<number[]> => {
   const res = await axios.get(`${baseUrl}/me/players`, {
     withCredentials: true,
     headers: { "x-csrf-token": localStorage.getItem("csrfToken") || "" }
   });
   return res.data.players;
+};
+
+export const deleteUserPlayers = async (): Promise<number[]> => {
+  const res = await axios.delete(`${baseUrl}/me/players`, {
+    withCredentials: true,
+    headers: { "x-csrf-token": localStorage.getItem("csrfToken") || "" }
+  });
+
+  return res.data.myPlayers;
 };

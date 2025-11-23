@@ -2,20 +2,23 @@ import { Request, Response, NextFunction } from "express";
 import Player from "../models/player";
 
 export const listarPlayers = async (req: Request, res: Response, next: NextFunction) => {
-    const players = await Player.find().lean();
+    const players = await Player.find();
     res.json(players);
 };
 
 export const getPlayerById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const playerId = Number(req.params.id);
-    const players = await Player.find({ id: playerId }).lean();
-    if (!players.length) return res.status(404).json({ error: "No players found with that id" });
-    res.json(players);
+    const { id } = req.params;
+    console.log(id);
+    const player = await Player.findById(id);
+    if (!player) return res.status(404).json({ error: "No player found with that id" });
+
+    res.json(player);
   } catch (err) {
     next(err);
   }
 };
+
 
 
 export const createPlayer = async (req: Request, res: Response, next: NextFunction) => {

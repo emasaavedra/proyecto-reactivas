@@ -17,6 +17,7 @@ export default function Packs() {
     try {
       const newPack = await packsService.openDefaultPack();
       setPack(newPack);
+      console.log(newPack);
       await addPlayersToUser(newPack.players.map(p => p.id));
     } catch (error) {
       console.error("Error opening pack:", error);

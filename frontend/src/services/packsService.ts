@@ -7,7 +7,7 @@ const openDefaultPack = async (): Promise<Pack> => {
   
   // Seleccionar 5 aleatorios
   const shuffled = allPlayers.sort(() => 0.5 - Math.random());
-  const selectedPlayers = shuffled.slice(0, 5);
+  const selectedPlayers = shuffled.slice(0, 4);
   
   // Crear el pack
   const pack: Pack = {
