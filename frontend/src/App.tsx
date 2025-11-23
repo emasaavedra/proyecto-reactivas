@@ -9,9 +9,12 @@ export default function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = authService.restoreLogin();
+  const fetchUser = async () => {
+    const user = await authService.restoreLogin();
     setCurrentUser(user);
-  }, []);
+  };
+  fetchUser();
+}, []);
 
   const handleLogout = () => {
     authService.logout();
@@ -27,9 +30,10 @@ export default function App() {
           <NavLink to="/packs">ValoPacks</NavLink>
           <NavLink to="/team">Mi Equipo</NavLink>
           <NavLink to="/leaderboard">Tabla de Puntos</NavLink>
-          <NavLink to="/profile">Perfil</NavLink>
+          
           <NavLink to="/players">Lista de Jugadores</NavLink>
           <NavLink to="/tournaments">Torneos</NavLink>
+          <NavLink to="/profile">Perfil</NavLink>
           
           {currentUser ? (
             <>

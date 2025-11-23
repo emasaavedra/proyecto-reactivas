@@ -1,10 +1,11 @@
 import express, {Request, Response, NextFunction} from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import cookieParser from "cookie-parser"; // ← NUEVO
 import config from "./config/config"; // ← NUEVO
 import playersRouter from "./routes/players";
 import loginRouter from "./routes/login"; // ← NUEVO
+import usersRouter from "./routes/users";
+import cookieParser from "cookie-parser";
 
 const errorHandler = (
   error: { name: string; message: string },
@@ -27,6 +28,7 @@ app.use(cors({
   origin: "http://localhost:5173", // o el puerto donde corre tu frontend
   credentials: true
 }));
+app.use(cookieParser());
 app.use(express.json());
 
 async function startServer() {
@@ -35,13 +37,14 @@ async function startServer() {
     console.log("Connected to MongoDB");
 
     app.use("/api", playersRouter);
-    app.use("/api", loginRouter); // ← NUEVO
+    app.use("/api", loginRouter);
+    app.use("/api/users", usersRouter);
     
     app.get("/", (req: Request, res: Response) => {
       res.send("<h1>Servidor funcionando correctamente :D</h1>");
     });
 
-    app.use(errorHandler); // ← Mover al final
+    app.use(errorHandler);
 
     app.listen(config.PORT, () => {
       console.log(`Server running on http://localhost:${config.PORT}`);

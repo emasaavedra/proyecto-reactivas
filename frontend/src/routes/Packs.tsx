@@ -4,6 +4,7 @@ import Player from "../components/player";
 import PlayerModal from "../components/playerModal";
 import type { Pack } from "../types/Packs";
 import type { IPlayer } from "../types/Player";
+import { addPlayersToUser } from "../services/userService";
 
 export default function Packs() {
   const [pack, setPack] = useState<Pack | null>(null);
@@ -16,6 +17,7 @@ export default function Packs() {
     try {
       const newPack = await packsService.openDefaultPack();
       setPack(newPack);
+      await addPlayersToUser(newPack.players.map(p => p.id));
     } catch (error) {
       console.error("Error opening pack:", error);
     } finally {

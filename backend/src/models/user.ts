@@ -29,7 +29,8 @@ const UserSchema = new mongoose.Schema({
   points: { 
     type: Number, 
     default: 0 
-  }
+  },
+  myPlayers: [{ type: Number, ref: "Player", default: [] }],
 });
 
 UserSchema.set("toJSON", {
@@ -37,7 +38,7 @@ UserSchema.set("toJSON", {
     returnedObject.id = returnedObject._id?.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
-    delete returnedObject.passwordHash; // No exponer el hash
+    delete returnedObject.passwordHash;
   },
 });
 

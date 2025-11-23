@@ -8,12 +8,13 @@ export default function Profile() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const currentUser = authService.restoreLogin();
-    if (!currentUser) {
-      navigate("/login");
-    } else {
-      setUser(currentUser);
-    }
+    authService.restoreLogin().then(currentUser => {
+      if (!currentUser) {
+        navigate("/login");
+      } else {
+        setUser(currentUser);
+      }
+    });
   }, [navigate]);
 
   if (!user) {

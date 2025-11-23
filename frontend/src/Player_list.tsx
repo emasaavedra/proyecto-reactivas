@@ -51,6 +51,13 @@ function Player_list() {
           onClose={() => setSelectedPlayer(null)}
         />
       )}
+      <button
+        className="scroll-top-btn"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        title="Volver arriba"
+      >
+        ↑
+      </button>
     </div>
   );
 }

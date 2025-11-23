@@ -32,7 +32,9 @@ const login = async (credentials: Credentials): Promise<User | null> => {
 
 const restoreLogin = async (): Promise<User | null> => {
     try {
-        const response = await axios.get(`${baseUrl}/login/me`);
+        const response = await axios.get(`${baseUrl}/login/me`,{
+            headers: { "x-csrf-token": localStorage.getItem("csrfToken")}
+        });
         localStorage.setItem("currentUser", JSON.stringify(response.data));
         return response.data;
     } catch {

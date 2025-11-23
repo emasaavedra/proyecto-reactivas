@@ -5,54 +5,36 @@ import User from "../models/user";
 import config from "../config/config";
 import { withUser } from "../utils/middleware";
 
-// Login
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username, password } = req.body;
 
-    if (!username || !password) {
-      return res.status(400).json({ error: "Username and password required" });
-    }
-
     const user = await User.findOne({ username });
-    
     if (!user) {
-      return res.status(401).json({ error: "Invalid username or password" });
+      return res.status(401).json({ error: "invalid username or password" });
     }
 
     const passwordCorrect = await bcrypt.compare(password, user.passwordHash);
 
     if (!passwordCorrect) {
-      return res.status(401).json({ error: "Invalid username or password" });
+      return res.status(401).json({ error: "invalid username or password" });
     }
 
-    // Crear token con CSRF incluido
     const userForToken = {
       username: user.username,
       csrf: crypto.randomUUID(),
-      id: user._id.toString(),
+      id: user._id,
     };
 
-    const token = jwt.sign(userForToken, config.JWT_SECRET, {
-      expiresIn: 60 * 60, // 1 hora
-    });
-
-    // Enviar CSRF token en header
+    const token = jwt.sign(userForToken, config.JWT_SECRET);
     res.setHeader("X-CSRF-Token", userForToken.csrf);
-    
-    // Enviar JWT en cookie HttpOnly
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 60 * 60 * 1000, // 1 hora
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      maxAge: 60 * 60 * 1000,
     });
-
-    res.status(200).json({ 
-      username: user.username, 
-      name: user.name,
-      id: user._id 
-    });
+    res.status(200).send({ username: user.username, name: user.name });
   } catch (error) {
     next(error);
   }
@@ -104,7 +86,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       maxAge: 60 * 60 * 1000,
     });
 

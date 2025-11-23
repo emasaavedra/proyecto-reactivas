@@ -20,13 +20,8 @@ declare global {
 }
 
 export const withUser = (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.headers['authorization'] || req.headers['Authorization'];
-  if (!authHeader || typeof authHeader !== "string") {
-    return res.status(401).json({ error: "Token not found" });
-  }
-
-  // Extraer el token si viene como "Bearer <token>"
-  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : authHeader;
+  // Busca el token en la cookie
+  const token = req.cookies.token;
 
   if (!token) {
     return res.status(401).json({ error: "Token not found" });
