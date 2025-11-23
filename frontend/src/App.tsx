@@ -9,12 +9,12 @@ export default function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-  const fetchUser = async () => {
-    const user = await authService.restoreLogin();
-    setCurrentUser(user);
-  };
-  fetchUser();
-}, []);
+    const fetchUser = async () => {
+      const user = await authService.restoreLogin();
+      setCurrentUser(user);
+    };
+    fetchUser();
+  }, []);
 
   const handleLogout = () => {
     authService.logout();
