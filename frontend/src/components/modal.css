@@ -20,6 +20,9 @@
   position: relative;
 }
 
+.modal-close {
+  color: #fff;
+}
 
 .modal-text {
   display: flex;

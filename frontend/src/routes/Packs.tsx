@@ -1,13 +1,15 @@
 import { useState } from "react";
 import packsService from "../services/packsService";
-import sobres from "../components/pack";
+import Player from "../components/player";
+import PlayerModal from "../components/playerModal";
 import type { Pack } from "../types/Packs";
+import type { IPlayer } from "../types/Player";
 
 export default function Packs() {
   const [pack, setPack] = useState<Pack | null>(null);
   const [loading, setLoading] = useState(false);
+  const [selectedPlayer, setSelectedPlayer] = useState<IPlayer | null>(null);
 
-  // Abrir pack usando el servicio real
   const openPack = async () => {
     setLoading(true);
     setPack(null); 
@@ -24,14 +26,29 @@ export default function Packs() {
   return (
     <section className="card">
       <h1>ValoPacks</h1>
-      <p>Abre un Pack para conseguir 5 cartas de ValoPlayers !!</p>
+      <p>Abre un Pack para conseguir 4 cartas de ValoPlayers !!</p>
       <button className="btn primary" onClick={openPack} disabled={loading}>
         {loading ? "Abriendo..." : "Abrir Pack"}
       </button>
 
       {pack && (
-        <div className="pack-result">
-          {sobres(pack)}
+        <div className="players-grid">
+          {pack.players.slice(0, 4).map((p, idx) => (
+            <div
+              key={p.id ?? idx}
+              onClick={() => setSelectedPlayer(p)}
+              style={{ cursor: "pointer" }}
+            >
+              <Player player={p} />
+            </div>
+          ))}
+          {selectedPlayer && (
+            <PlayerModal
+              player={selectedPlayer}
+              tournamentPlayers={pack.players.filter(pl => pl.tournament === selectedPlayer.tournament)}
+              onClose={() => setSelectedPlayer(null)}
+            />
+          )}
         </div>
       )}
     </section>
