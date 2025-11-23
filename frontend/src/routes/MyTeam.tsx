@@ -5,6 +5,7 @@ import PlayerModal from "../components/playerModal";
 import type { IPlayer } from "../types/Player";
 import playersService from "../services/playersService";
 import { deleteUserPlayers } from "../services/userService";
+import { getStatRange } from "../utils/stats";
 
 export default function MyTeam() {
   const [players, setPlayers] = useState<IPlayer[]>([]);
@@ -21,6 +22,11 @@ export default function MyTeam() {
       setPlayers(fetchedPlayers);
   });
   }, []);
+
+  const ratingRange = players.length > 0
+    ? getStatRange(players, "rating")
+    : { min: 0, max: 1 };
+
 
   return (
   <div className="players-grid">
@@ -50,7 +56,7 @@ export default function MyTeam() {
           onClick={() => setSelectedPlayer(p)}
           style={{ cursor: "pointer" }}
         >
-          <Player player={ p} />
+          <Player player={ p} ratingRange={ratingRange} />
         </div>
       )})
     )}

@@ -1,8 +1,10 @@
 import type { IPlayer as PlayerType } from "../types/Player";
 import "./player.css";
+import { getStatColor } from "../utils/stats";
 
 type Props = {
   player: PlayerType;
+  ratingRange: { min: number; max: number },
 };
 
 function safeNum(value: any, decimals = 2) {
@@ -10,20 +12,30 @@ function safeNum(value: any, decimals = 2) {
   return isNaN(n) ? "0.00" : n.toFixed(decimals);
 }
 
-function Player({ player }: Props) {
+function Player({ player, ratingRange }: Props) {
   // Asegurar rating seguro antes de compararlo:
-  const rating = Number(player.rating) || 0;
+  const rating = Number(player.rating) || 1.0;
 
-  let ratingClass = "";
-  if (rating >= 1.1) ratingClass = "gold";
-  else if (rating >= 1.0) ratingClass = "silver";
-  else ratingClass = "bronze";
+  const dynamicColor = getStatColor(
+    rating,
+    ratingRange.min,
+    ratingRange.max
+  );
+
 
   return (
-    <div className={`player-card ${ratingClass}`}>
+    <div
+      className="player-card"
+      style={{ backgroundColor: dynamicColor }}
+    >
       <div className="player-image">
         <img src={`/${player.photo}`} alt={player.name} />
-        <div className="player-rating">{safeNum(player.rating)}</div>
+        <div
+          className="player-rating"
+          style={{ backgroundColor: dynamicColor }}
+        >
+          {safeNum(player.rating)}
+        </div>
       </div>
 
       <div className="player-info">

@@ -5,11 +5,18 @@ import PlayerModal from "./components/playerModal";
 
 import "./Player_list.css";
 import usePlayerState from "./types/State";
+import { getStatRange } from "./utils/stats";
+
 
 function Player_list() {
   const players = usePlayerState(state => state.players);
   const fetchPlayers = usePlayerState(state => state.fetchPlayers);
   const error = usePlayerState(state => state.error);
+
+  const ratingRange = players.length > 0 
+  ? getStatRange(players, "rating")
+  : { min: 0, max: 1 };
+
 
   const [selectedPlayer, setSelectedPlayer] = useState<IPlayer | null>(null);
 
@@ -37,7 +44,7 @@ function Player_list() {
               onClick={() => setSelectedPlayer(p)}
               style={{ cursor: "pointer" }}
             >
-              <Player player={p} />
+              <Player player={p} ratingRange={ratingRange}/>
             </div>
           ))}
         </div>
