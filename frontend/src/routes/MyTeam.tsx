@@ -4,7 +4,6 @@ import Player from "../components/player";
 import PlayerModal from "../components/playerModal";
 import type { IPlayer } from "../types/Player";
 import playersService from "../services/playersService";
-import { deleteUserPlayers } from "../services/userService";
 import { getStatRange } from "../utils/stats";
 
 export default function MyTeam() {
