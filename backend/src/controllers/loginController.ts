@@ -34,7 +34,9 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       maxAge: 60 * 60 * 1000,
     });
-    res.status(200).send({ username: user.username, name: user.name });
+    // Usar toJSON para serializar correctamente
+    const userResponse = user.toJSON();
+    res.status(200).send(userResponse);
   } catch (error) {
     next(error);
   }
@@ -90,11 +92,9 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
       maxAge: 60 * 60 * 1000,
     });
 
-    res.status(201).json({
-      username: savedUser.username,
-      name: savedUser.name,
-      id: savedUser._id,
-    });
+    // Usar toJSON para serializar correctamente
+    const userResponse = savedUser.toJSON();
+    res.status(201).json(userResponse);
   } catch (error) {
     next(error);
   }

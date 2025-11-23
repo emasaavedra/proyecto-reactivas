@@ -30,7 +30,7 @@ const UserSchema = new mongoose.Schema({
     type: Number, 
     default: 0 
   },
-  myPlayers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Player", default: [] }],
+  myPlayers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Player" }],
 });
 
 UserSchema.set("toJSON", {

@@ -14,6 +14,16 @@ export default function App() {
       setCurrentUser(user);
     };
     fetchUser();
+
+    // Escuchar evento de actualización de usuario
+    const handleUserUpdate = () => {
+      fetchUser();
+    };
+    window.addEventListener("userUpdated", handleUserUpdate);
+
+    return () => {
+      window.removeEventListener("userUpdated", handleUserUpdate);
+    };
   }, []);
 
   const handleLogout = () => {
@@ -38,7 +48,7 @@ export default function App() {
           {currentUser ? (
             <>
               <span style={{ color: "#00d4ff", padding: "0 1rem" }}>
-                👤 {currentUser.username}
+                👤 {currentUser.username} | 🎴 {currentUser.cards || 0}
               </span>
               <button onClick={handleLogout} className="btn" style={{ fontSize: "0.9rem", padding: "0.3rem 0.8rem" }}>
                 Cerrar Sesión

@@ -5,9 +5,11 @@ import type { User } from "../types/User";
 
 export default function Profile() {
   const [user, setUser] = useState<User | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Forzar recarga desde el servidor en cada visita
     authService.restoreLogin().then(currentUser => {
       if (!currentUser) {
         navigate("/login");
@@ -15,7 +17,7 @@ export default function Profile() {
         setUser(currentUser);
       }
     });
-  }, [navigate]);
+  }, [navigate, refreshKey]);
 
   if (!user) {
     return (
@@ -24,6 +26,13 @@ export default function Profile() {
       </section>
     );
   }
+
+  const handleRefresh = async () => {
+    const updatedUser = await authService.restoreLogin();
+    if (updatedUser) {
+      setUser(updatedUser);
+    }
+  };
 
   return (
     <section className="card">
@@ -35,7 +44,10 @@ export default function Profile() {
         <li><strong>Puntos:</strong> {user.points}</li>
         <li><strong>Equipo Favorito:</strong> {user.favoriteTeam || "—"}</li>
       </ul>
-      <button className="btn">Editar Perfil</button>
+      <div style={{ display: "flex", gap: "10px" }}>
+        <button className="btn" onClick={handleRefresh}>🔄 Actualizar</button>
+        <button className="btn">Editar Perfil</button>
+      </div>
     </section>
   );
 }

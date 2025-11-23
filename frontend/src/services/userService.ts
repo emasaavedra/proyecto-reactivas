@@ -13,7 +13,7 @@ export const addPlayersToUser = async (playerIds: number[]) => {
   );
 };
 
-export const getUserPlayers = async (): Promise<number[]> => {
+export const getUserPlayers = async (): Promise<any[]> => {
   const res = await axios.get(`${baseUrl}/me/players`, {
     withCredentials: true,
     headers: { "x-csrf-token": localStorage.getItem("csrfToken") || "" }

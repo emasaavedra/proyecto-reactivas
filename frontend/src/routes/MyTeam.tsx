@@ -11,14 +11,11 @@ export default function MyTeam() {
   const [selectedPlayer, setSelectedPlayer] = useState<IPlayer | null>(null);
 
   useEffect(() => {
-    getUserPlayers().then(async (ids) => {
-
-      const fetchedPlayers = await Promise.all(
-        ids.map((id) => playersService.getById(id))
-      );
-
-      console.log("Holaaaaa, Players:", fetchedPlayers);
-      setPlayers(fetchedPlayers);
+    getUserPlayers().then((players) => {
+      console.log("Players recibidos del backend:", players);
+      setPlayers(players);
+  }).catch(error => {
+    console.error("Error obteniendo jugadores:", error);
   });
   }, []);
 
@@ -35,11 +32,11 @@ export default function MyTeam() {
       <div>
       <p style={{ width: "100%" }}>no tienes ningun jugador pipipi :(</p>
       <button onClick={() => 
-                getUserPlayers().then(async (ids) => {
-                const fetchedPlayers = await Promise.all(
-                  ids.map((id) => playersService.getById(id))
-                );
-                setPlayers(fetchedPlayers);
+                getUserPlayers().then((players) => {
+                console.log("Players recibidos del backend (botón):", players);
+                setPlayers(players);
+              }).catch(error => {
+                console.error("Error obteniendo jugadores:", error);
               })
             }
           >
