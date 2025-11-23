@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import type { IPlayer } from "./Player";
-import type { Tournament } from "./Tournament";
+import type { IPlayer } from "../types/Player";
+import type { Tournament } from "../types/Tournament";
 import playersService from "../services/playersService";
 import tournamentService from "../services/tournamentService";
 

@@ -26,6 +26,7 @@ export default function MyTeam() {
     ? getStatRange(players, "rating")
     : { min: 0, max: 1 };
 
+  const sortedPlayers = [...players].sort((a, b) => b.rating - a.rating);
 
   return (
   <div className="players-grid">
@@ -47,7 +48,7 @@ export default function MyTeam() {
       </div>
     ) : (
       
-      players.map( (p, idx) => {
+      sortedPlayers.map( (p, idx) => {
         console.log("Renderizando player:", p);
         return (
         <div

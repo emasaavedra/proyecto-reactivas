@@ -1,13 +1,12 @@
 import playersService from "./playersService";
 import type { Pack } from "../types/Packs";
+import { weightedRandomPlayersByACS } from "../utils/randomByACS";
 
 const openDefaultPack = async (): Promise<Pack> => {
   // Obtener todos los jugadores
   const allPlayers = await playersService.getAll();
   
-  // Seleccionar 5 aleatorios
-  const shuffled = allPlayers.sort(() => 0.5 - Math.random());
-  const selectedPlayers = shuffled.slice(0, 4);
+  const selectedPlayers = weightedRandomPlayersByACS(allPlayers, 4);
   
   // Crear el pack
   const pack: Pack = {
@@ -18,6 +17,8 @@ const openDefaultPack = async (): Promise<Pack> => {
   
   return pack;
 };
+
+
 
 export default {
   openDefaultPack,

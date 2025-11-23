@@ -4,7 +4,7 @@ import type { IPlayer } from "./types/Player";
 import PlayerModal from "./components/playerModal";
 
 import "./Player_list.css";
-import usePlayerState from "./types/State";
+import usePlayerState from "./stores/State";
 import { getStatRange } from "./utils/stats";
 
 
