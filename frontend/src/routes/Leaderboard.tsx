@@ -1,6 +1,6 @@
 const rows = [
   { user: "Emanuel", points: 1390 },
-  { user: "Pablo", points: 1275 },
+  { user: "Pablo", points: -10000000000000 },
   { user: "Benjamín", points: 1105 },
 ];
 
