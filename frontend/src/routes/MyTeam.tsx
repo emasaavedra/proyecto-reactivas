@@ -1,14 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getUserPlayers } from "../services/userService";
 import playersService from "../services/playersService";
 import Player from "../components/player";
 import PlayerModal from "../components/playerModal";
 import type { IPlayer } from "../types/Player";
-import { getStatRange } from "../utils/stats";
+import { getStatRange, getCardRarity, getPlayerRating, type CardRarity } from "../utils/stats";
 import "../components/my-team.css";
 import { DraggableSlotWrapper, DraggablePlayer, DroppableSlot } from "../components/DraggableSlotWrapper";
 import { useTeamStore } from "../stores/teamStore";
 import TeamStats from "../components/TeamStats";
+import { Button, Chip } from "@mui/material";
 
 import {
   DndContext,
@@ -33,25 +34,57 @@ export default function MyTeam() {
   const originalIndexMap = useTeamStore((state) => state.originalIndexMap);
   const setOriginalIndexMap = useTeamStore((state) => state.setOriginalIndexMap);
 
+  // Filtros y ordenamiento de react-router
+  const [rarityFilter, setRarityFilter] = useState<CardRarity | "Todas">("Todas");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   useEffect(() => {
     getUserPlayers().then(async (ids) => {
-    const fetched = await Promise.all(ids.map(id => playersService.getById(id)));
+      const fetched = await Promise.all(ids.map(id => playersService.getById(id)));
 
-    const map: Record<string, number> = {};
-    fetched.forEach((p, i) => (map[p.id] = i));
-    setOriginalIndexMap(map);
+      const map: Record<string, number> = {};
+      fetched.forEach((p, i) => (map[p.id] = i));
+      setOriginalIndexMap(map);
 
-    const slotIds = slots.filter(Boolean).map(p => p!.id);
-    const inventoryPlayers = fetched.filter(p => !slotIds.includes(p.id));
+      const slotIds = slots.filter(Boolean).map(p => p!.id);
+      const inventoryPlayers = fetched.filter(p => !slotIds.includes(p.id));
 
-    setPlayers(inventoryPlayers);
+      setPlayers(inventoryPlayers);
     });
   }, []);
 
-
   const ratingRange =
     players.length > 0 ? getStatRange(players, "rating") : { min: 0, max: 1 };
+
+  // Filtros y ordenamiento
+  const filteredPlayers = players.filter(p => {
+    if (rarityFilter === "Todas") return true;
+    const rating = getPlayerRating(p);
+    const rarityInfo = getCardRarity(rating, ratingRange.min, ratingRange.max);
+    return rarityInfo.rarity === rarityFilter;
+  });
+
+  const sortedPlayers = [...filteredPlayers].sort((a, b) => {
+    const ratingA = getPlayerRating(a);
+    const ratingB = getPlayerRating(b);
+    return sortOrder === "desc" ? ratingB - ratingA : ratingA - ratingB;
+  });
+
+  const rarityColors: Record<CardRarity, string> = {
+    "Legendaria": "#ff6b6b",
+    "Épica": "#9b59b6",
+    "Especial": "#f39c12",
+    "Normal": "#3498db",
+    "Común": "#95a5a6"
+  };
+
+  const rarityIcons: Record<CardRarity, string> = {
+    "Legendaria": "🌈",
+    "Épica": "💜",
+    "Especial": "🧡",
+    "Normal": "💙",
+    "Común": "⚪"
+  };
 
   const resetSlots = () => {
     // Obtiene todos los jugadores que estaban en slots
@@ -150,26 +183,90 @@ export default function MyTeam() {
 
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div style={{ display: "flex", gap: "60px" }}>
+      <div style={{ display: "flex", gap: "60px", flexDirection: "column" }}>
         
-        {/* INVENTARIO */}
-        <div
-          ref={invRef}
-          style={{
-            width: "250px",
-            height: "800px",
-            overflow: "auto",
-            background: invIsOver ? "#223388" : "transparent",
-            padding: "10px",
-            borderRadius: "10px",
-          }}
-        >
-          <h2 style={{ color: "white" }}>Inventario</h2>
+        {/* FILTROS Y ORDENAMIENTO */}
+        <div style={{ padding: "0 10px" }}>
+          <h2 style={{ color: "white", textAlign: "center" }}>Mi Equipo</h2>
+          
+          {/* Botones de ordenamiento */}
+          <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center" }}>
+            <Button 
+              variant={sortOrder === "desc" ? "contained" : "outlined"}
+              onClick={() => setSortOrder("desc")}
+              size="small"
+            >
+              ⬇️ Mayor Rating
+            </Button>
+            <Button 
+              variant={sortOrder === "asc" ? "contained" : "outlined"}
+              onClick={() => setSortOrder("asc")}
+              size="small"
+            >
+              ⬆️ Menor Rating
+            </Button>
+          </div>
 
-          {players.map((p) => (
-            <DraggablePlayer key={p.id} player={p} from="inventory" ratingRange={ratingRange} setSelectedPlayer={setSelectedPlayer} />
-          ))}
+          {/* Filtros de rareza */}
+          <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center" }}>
+            <Button 
+              variant={rarityFilter === "Todas" ? "contained" : "outlined"}
+              onClick={() => setRarityFilter("Todas")}
+              size="small"
+              sx={{
+                backgroundColor: rarityFilter === "Todas" ? "#3498db" : "transparent",
+                color: rarityFilter === "Todas" ? "white" : "#3498db",
+                borderColor: "#3498db"
+              }}
+            >
+              Todas <Chip label={players.length} size="small" sx={{ ml: 0.5 }} />
+            </Button>
+            
+            {(["Legendaria", "Épica", "Especial", "Normal", "Común"] as CardRarity[]).map(rarity => {
+              const count = players.filter(p => {
+                const rating = getPlayerRating(p);
+                const rarityInfo = getCardRarity(rating, ratingRange.min, ratingRange.max);
+                return rarityInfo.rarity === rarity;
+              }).length;
+
+              return (
+                <Button 
+                  key={rarity}
+                  variant={rarityFilter === rarity ? "contained" : "outlined"}
+                  onClick={() => setRarityFilter(rarity)}
+                  size="small"
+                  sx={{
+                    backgroundColor: rarityFilter === rarity ? rarityColors[rarity] : "transparent",
+                    color: rarityFilter === rarity ? "white" : rarityColors[rarity],
+                    borderColor: rarityColors[rarity]
+                  }}
+                >
+                  {rarityIcons[rarity]} {rarity} <Chip label={count} size="small" sx={{ ml: 0.5 }} />
+                </Button>
+              );
+            })}
+          </div>
         </div>
+
+        <div style={{ display: "flex", gap: "60px" }}>
+          {/* INVENTARIO */}
+          <div
+            ref={invRef}
+            style={{
+              width: "250px",
+              height: "600px",
+              overflow: "auto",
+              background: invIsOver ? "#223388" : "transparent",
+              padding: "10px",
+              borderRadius: "10px",
+            }}
+          >
+            <h3 style={{ color: "white" }}>Inventario ({sortedPlayers.length})</h3>
+
+            {sortedPlayers.map((p) => (
+              <DraggablePlayer key={p.id} player={p} from="inventory" ratingRange={ratingRange} setSelectedPlayer={setSelectedPlayer} />
+            ))}
+          </div>
 
         {/* SLOTS */}
         <div>
@@ -208,8 +305,8 @@ export default function MyTeam() {
           </div>
           {/* Promedio de stats del equipo */}
             <TeamStats slots={slots} allPlayers={players} />
+          </div>
         </div>
-
       </div>
 
       {/* DRAG OVERLAY → El player que estás arrastrando */}

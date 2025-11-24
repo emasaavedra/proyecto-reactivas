@@ -9,21 +9,53 @@ import Leaderboard from "./routes/Leaderboard.tsx";
 import Profile from "./routes/Profile.tsx";
 import Login from "./routes/Login";
 import Player_list from "./Player_list.tsx";
-import "./index.css";
 import Tournament_list from "./Tournament_list.tsx";
+import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import PublicRoute from "./components/PublicRoute.tsx";
+import "./index.css";
 
 const router = createBrowserRouter([
   {
     element: <App />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/login", element: <Login /> },
-      { path: "/packs", element: <Packs /> },
-      { path: "/team", element: <MyTeam /> },
-      { path: "/leaderboard", element: <Leaderboard /> },
-      { path: "/profile", element: <Profile /> },
+      { 
+        path: "/login", 
+        element: (
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        ) 
+      },
+      
       { path: "/players", element: <Player_list /> },
-      { path: "/tournaments", element: <Tournament_list /> }
+      { path: "/tournaments", element: <Tournament_list /> },
+      { path: "/leaderboard", element: <Leaderboard /> },
+      
+      { 
+        path: "/packs", 
+        element: (
+          <ProtectedRoute>
+            <Packs />
+          </ProtectedRoute>
+        ) 
+      },
+      { 
+        path: "/team", 
+        element: (
+          <ProtectedRoute>
+            <MyTeam />
+          </ProtectedRoute>
+        ) 
+      },
+      { 
+        path: "/profile", 
+        element: (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        ) 
+      },
     ],
   },
 ]);

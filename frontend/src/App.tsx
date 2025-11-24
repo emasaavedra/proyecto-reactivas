@@ -9,12 +9,21 @@ export default function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-  const fetchUser = async () => {
-    const user = await authService.restoreLogin();
-    setCurrentUser(user);
-  };
-  fetchUser();
-}, []);
+    const fetchUser = async () => {
+      const user = await authService.restoreLogin();
+      setCurrentUser(user);
+    };
+    fetchUser();
+
+    const handleUserUpdate = () => {
+      fetchUser();
+    };
+    window.addEventListener("userUpdated", handleUserUpdate);
+
+    return () => {
+      window.removeEventListener("userUpdated", handleUserUpdate);
+    };
+  }, []);
 
   const handleLogout = () => {
     authService.logout();
@@ -38,7 +47,7 @@ export default function App() {
           {currentUser ? (
             <>
               <span style={{ color: "#00d4ff", padding: "0 1rem" }}>
-                👤 {currentUser.username}
+                👤 {currentUser.username} | 🎴 {currentUser.cards || 0}
               </span>
               <button onClick={handleLogout} className="btn" style={{ fontSize: "0.9rem", padding: "0.3rem 0.8rem" }}>
                 Cerrar Sesión

@@ -8,6 +8,8 @@ import { addPlayersToUser } from "../services/userService";
 import { useCooldownStore } from "../stores/cooldownStore";
 import { useEffect } from "react";
 import { getStatRange } from "../utils/stats";
+import { Button, Box } from "@mui/material";
+import StyleIcon from "@mui/icons-material/Style";
 
 export default function Packs() {
   const [pack, setPack] = useState<Pack | null>(null);
@@ -37,8 +39,17 @@ export default function Packs() {
       const newPack = await packsService.openDefaultPack();
       setPack(newPack);
       console.log(newPack);
-      await addPlayersToUser(newPack.players.map(p => p.id));
+      const response = await addPlayersToUser(newPack.players.map(p => p.id));
       startCooldown();
+      
+      const currentUser = localStorage.getItem("currentUser");
+      if (currentUser) {
+        const userData = JSON.parse(currentUser);
+        userData.cards = response.data.cards;
+        localStorage.setItem("currentUser", JSON.stringify(userData));
+      }
+
+      window.dispatchEvent(new Event("userUpdated"));
     } catch (error) {
       console.error("Error opening pack:", error);
     } finally {
@@ -50,17 +61,36 @@ export default function Packs() {
     <section className="card">
       <h1>ValoPacks</h1>
       <p>Abre un Pack para conseguir 4 cartas de ValoPlayers !!</p>
-      <button
-        className="btn primary"
-        onClick={openPack}
-        disabled={loading || cooldownRemaining > 0}
-      >
-        {loading
-          ? "Abriendo..."
-          : cooldownRemaining > 0
-            ? `Cooldown: ${Math.ceil(cooldownRemaining / 1000)}s`
-            : "Abrir Pack"}
-      </button>
+      <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
+        <Button
+          variant="contained"
+          size="large"
+          startIcon={<StyleIcon />}
+          onClick={openPack}
+          disabled={loading || cooldownRemaining > 0}
+          sx={{
+            py: 1.5,
+            px: 4,
+            fontSize: "1rem",
+            backgroundColor: "#3498db",
+            "&:hover": {
+              backgroundColor: "#2980b9",
+              transform: "translateY(-2px)",
+            },
+            "&:disabled": {
+              backgroundColor: "#7f8c8d",
+              color: "#bdc3c7",
+            },
+            transition: "all 0.2s ease"
+          }}
+        >
+          {loading
+            ? "Abriendo..."
+            : cooldownRemaining > 0
+              ? `Cooldown: ${Math.ceil(cooldownRemaining / 1000)}s`
+              : "Abrir Pack"}
+        </Button>
+      </Box>
 
       {pack && (
         <div className="players-grid">
