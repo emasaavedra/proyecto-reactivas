@@ -29,3 +29,15 @@ export const deleteUserPlayers = async (): Promise<number[]> => {
 
   return res.data.myPlayers;
 };
+
+export const updateFavoriteTeam = async (teamName: string): Promise<any> => {
+  const res = await axios.patch(
+    `${baseUrl}/me/favorite-team`,
+    { favoriteTeam: teamName },
+    {
+      withCredentials: true,
+      headers: { "x-csrf-token": localStorage.getItem("csrfToken") || "" }
+    }
+  );
+  return res.data;
+};

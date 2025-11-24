@@ -1,6 +1,6 @@
 import type { IPlayer as PlayerType } from "../types/Player";
 import "./player.css";
-import { getStatColor } from "../utils/stats";
+import { getCardRarity, getPlayerRating } from "../utils/stats";
 
 type Props = {
   player: PlayerType;
@@ -13,10 +13,10 @@ function safeNum(value: any, decimals = 2) {
 }
 
 function Player({ player, ratingRange }: Props) {
-  // Asegurar rating seguro antes de compararlo:
-  const rating = Number(player.rating) || 1.0;
+  // Obtener el rating (calculado si es necesario)
+  const rating = getPlayerRating(player);
 
-  const dynamicColor = getStatColor(
+  const rarityInfo = getCardRarity(
     rating,
     ratingRange.min,
     ratingRange.max
@@ -26,15 +26,32 @@ function Player({ player, ratingRange }: Props) {
   return (
     <div
       className="player-card"
-      style={{ backgroundColor: dynamicColor }}
+      style={{ background: rarityInfo.gradient }}
     >
       <div className="player-image">
         <img src={`/${player.photo}`} alt={player.name} />
         <div
           className="player-rating"
-          style={{ backgroundColor: dynamicColor }}
+          style={{ backgroundColor: rarityInfo.color }}
         >
-          {safeNum(player.rating)}
+          {safeNum(rating)}
+          {player.rating === 0 && (
+            <span style={{ fontSize: "0.6rem", display: "block" }}>est.</span>
+          )}
+        </div>
+        <div
+          className="player-rarity"
+          style={{ 
+            backgroundColor: rarityInfo.color,
+            color: "white",
+            padding: "2px 8px",
+            borderRadius: "4px",
+            fontSize: "0.75rem",
+            fontWeight: "bold",
+            marginTop: "4px"
+          }}
+        >
+          {rarityInfo.rarity}
         </div>
       </div>
 

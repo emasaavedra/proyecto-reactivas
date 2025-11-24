@@ -57,5 +57,17 @@ usersRouter.delete("/me/players", withUser, async (req, res) => {
   res.json({ success: true, message: "Players removed", myPlayers: [] });
 });
 
+usersRouter.patch("/me/favorite-team", withUser, async (req, res) => {
+  const userId = req.userId;
+  const { favoriteTeam } = req.body;
+
+  const user = await User.findById(userId);
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  user.favoriteTeam = favoriteTeam;
+  await user.save();
+
+  res.json({ success: true, favoriteTeam: user.favoriteTeam });
+});
 
 export default usersRouter;
