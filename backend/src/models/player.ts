@@ -64,7 +64,6 @@ const playerSchema = new Schema({
 
 playerSchema.set("toJSON", {
   transform: (document, returnedObject) => {
-    returnedObject.playerId = returnedObject.id;
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
