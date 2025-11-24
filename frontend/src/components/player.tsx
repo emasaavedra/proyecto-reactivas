@@ -2,9 +2,32 @@ import type { IPlayer as PlayerType } from "../types/Player";
 import "./player.css";
 import { getStatColor } from "../utils/stats";
 
+import DuelistIcon from "../../public/icons/duelistSymbol.webp";
+import InitiatorIcon from "../../public/icons/initiatorSymbol.webp";
+import ControllerIcon from "../../public/icons/controllerSymbol.webp";
+import SentinelIcon from "../../public/icons/sentinelSymbol.webp";
+import FlexIcon from "../../public/icons/wildcardSymbol.png";
+
+
 type Props = {
-  player: PlayerType;
-  ratingRange: { min: number; max: number },
+  player: PlayerType | null;
+  ratingRange: { min: number; max: number }
+};
+
+const roleColors: Record<string, string> = {
+  Duelist: "#ff4d4d",
+  Initiator: "#3399ff",
+  Controller: "#33ff33",
+  Sentinel: "#ffcc33",
+  Flex: "#6A0DAD"
+};
+
+const roleIcons: Record<string, string> = {
+  Duelist: DuelistIcon,
+  Initiator: InitiatorIcon,
+  Controller: ControllerIcon,
+  Sentinel: SentinelIcon,
+  Flex: FlexIcon
 };
 
 function safeNum(value: any, decimals = 2) {
@@ -13,7 +36,52 @@ function safeNum(value: any, decimals = 2) {
 }
 
 function Player({ player, ratingRange }: Props) {
-  // Asegurar rating seguro antes de compararlo:
+  if (!player) {
+    const borderColor = roleColors["Flex"];
+    const icon = roleIcons["Flex"];
+
+    return (
+      <div
+        className="player-slot"
+        style={{
+          width: "180px",
+          height: "220px",
+          borderRadius: "12px",
+          border: `3px solid ${borderColor}`,
+          background: "#1E3A8A",
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          boxSizing: "border-box",
+        }}
+      >
+        <img
+          src={icon}
+          alt={"Player"}
+          style={{
+            position: "absolute",
+            top: "10px",
+            left: "10px",
+            width: "28px",
+            height: "28px",
+          }}
+        />
+        <span
+          style={{
+            fontSize: "48px",
+            fontWeight: "bold",
+            color: borderColor,
+            userSelect: "none",
+          }}
+        >
+          +
+        </span>
+      </div>
+    );
+  }
+
   const rating = Number(player.rating) || 1.0;
 
   const dynamicColor = getStatColor(

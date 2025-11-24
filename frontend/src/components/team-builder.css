@@ -1,0 +1,67 @@
+.team-builder-container {
+  display: flex;
+  gap: 2rem;
+  padding: 20px;
+}
+
+.inventory-column {
+  width: 45%;
+}
+
+.inventory-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.inventory-card {
+  cursor: grab;
+}
+
+.team-column {
+  width: 45%;
+}
+
+.team-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.slot {
+  border: 3px solid;
+  padding: 10px;
+  border-radius: 15px;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+}
+
+.slot-icon {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.slot-empty {
+  font-size: 20px;
+  opacity: 0.6;
+}
+
+.slot-filled {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.remove-btn {
+  margin-top: 8px;
+  background: #ff4444;
+  border: none;
+  padding: 6px 10px;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
