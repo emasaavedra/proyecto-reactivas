@@ -239,9 +239,72 @@ Los jugadores tienen rarezas basadas en su rating:
 
 ---
 
+## 🧪 Tests E2E (End-to-End)
+
+### Herramienta Utilizada: **Playwright**
+
+El proyecto implementa tests end-to-end utilizando **Playwright**, un framework moderno de testing automatizado que permite simular interacciones de usuarios reales en navegadores (Chromium, Firefox, WebKit). Playwright proporciona APIs robustas para navegación, interacción con elementos y validación de comportamiento.
+
+### Flujos Cubiertos
+
+#### **1. Sistema de Autenticación (Login)**
+- **Objetivo**: Verificar el flujo completo de inicio de sesión
+- **Casos de prueba**:
+  - Login con credenciales válidas
+  - Redirección exitosa después del login
+  - Persistencia de sesión mediante JWT en cookies
+  - Verificación de token en navegación posterior
+- **Validaciones**:
+  - Usuario redirigido a página principal tras autenticación exitosa
+  - Cookie HttpOnly con JWT establecida correctamente
+  - Navbar muestra información del usuario (username, cantidad de cartas)
+
+#### **2. Apertura de Packs**
+- **Objetivo**: Validar el sistema de obtención de cartas aleatorias
+- **Casos de prueba**:
+  - Usuario autenticado puede acceder a `/packs`
+  - Botón de "Abrir Pack" funcional (requiere autenticación)
+  - Animación de apertura de pack se ejecuta correctamente
+  - Se obtienen exactamente 4 cartas por pack
+  - Cooldown de 5 minutos se activa después de abrir pack
+- **Validaciones**:
+  - Cartas mostradas tienen información completa (nombre, equipo, rating, rareza)
+  - Botón deshabilitado durante cooldown
+  - Contador de tiempo restante funcional
+
+#### **3. Verificación de Inventario**
+- **Objetivo**: Confirmar que las cartas obtenidas se guardan correctamente
+- **Casos de prueba**:
+  - Cartas abiertas aparecen en la colección del usuario
+  - Navegación a `/team` muestra inventario actualizado
+  - Cartas tienen datos persistentes (rating, rareza, foto)
+  - Filtros de rareza funcionan en inventario
+- **Validaciones**:
+  - Número total de cartas incrementa después de abrir pack
+  - Cartas específicas obtenidas están presentes en inventario
+  - Datos de cartas coinciden con los mostrados al abrirlas
+
+### Ejecución de Tests
+
+```bash
+# Instalar Playwright
+npm install -D @playwright/test
+
+# Ejecutar tests
+npx playwright test
+
+# Modo UI interactivo
+npx playwright test --ui
+
+# Generar reporte HTML
+npx playwright show-report
+```
+
+---
+
 ## Decisiones de Diseño
 
-#### **1. Tema Oscuro Gaming**
+#### **1. Tema Oscuro**
 - **Justificación**: Los juegos competitivos (Valorant) tradicionalmente usan temas oscuros
 - **Implementación**: Fondo `#0b0c10` con gradientes sutiles para evitar monotonía
 - **Contraste**: Texto `#e8eaed` sobre fondos oscuros cumple WCAG AA para accesibilidad
@@ -256,17 +319,7 @@ Los jugadores tienen rarezas basadas en su rating:
 - **Scale Transform**: `scale(1.05)` para énfasis en cartas
 - **Transiciones Rápidas**: 0.05-0.3s para respuesta inmediata
 
-#### **4. Gradientes y Color**
-- **Degradados Dinámicos**: Rarezas con gradientes `linear-gradient` doble tono
-- **Botones con Gradiente**: Primarios usan `--accent` → `--accent2` para efecto premium
-- **Background Radial**: `radial-gradient` desde esquina crea profundidad visual
-
-#### **5. Tipografía**
-- **System Font Stack**: `ui-sans-serif, system-ui, -apple-system, Segoe UI` para rendimiento
-- **Peso Variable**: 600-800 para jerarquía (`font-weight: 800` en títulos)
-- **Letter Spacing**: `0.3px` en marca para legibilidad
-
-#### **6. Responsive Design**
+#### **4. Responsive Design**
 - **Grid Auto-fill**: Adaptación automática de columnas según viewport
 - **Max-width Container**: `1100px` para legibilidad en pantallas grandes
 - **Flexbox Wrap**: Componentes se reorganizan en móvil sin media queries explícitas
