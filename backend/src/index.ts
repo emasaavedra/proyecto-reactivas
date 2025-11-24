@@ -6,6 +6,7 @@ import playersRouter from "./routes/players";
 import loginRouter from "./routes/login"; // ← NUEVO
 import usersRouter from "./routes/users";
 import cookieParser from "cookie-parser";
+import tournamentRouter from "./routes/tournaments";
 
 const errorHandler = (
   error: { name: string; message: string },
@@ -38,6 +39,7 @@ async function startServer() {
 
     app.use("/api", playersRouter);
     app.use("/api", loginRouter);
+    app.use("/api/", tournamentRouter);
     app.use("/api/users", usersRouter);
     
     app.get("/", (req: Request, res: Response) => {

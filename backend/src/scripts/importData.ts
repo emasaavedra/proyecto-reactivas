@@ -8,45 +8,64 @@ import ITournament from "../models/ITournament";
 const MONGO_URI = "mongodb://localhost:27017/valorantdb";
 
 type TipoJson = {
-  players: IPlayer[],
-  tournaments: ITournament[],
+players: IPlayer[],
+tournaments: ITournament[],
 }
 
 async function importData() {
-  try {
-    const filePath = path.join(__dirname, "../../jugadores_actualizado.json");
-    const rawData = fs.readFileSync(filePath, "utf8");
-    const data: TipoJson = JSON.parse(rawData);
+try {
+const filePath = path.join(__dirname, "../../jugadores_actualizado.json");
+const rawData = fs.readFileSync(filePath, "utf8");
+const data: TipoJson = JSON.parse(rawData);
 
-    console.log(data.players[0]);
+console.log("Primer jugador JSON:", data.players[0]);
 
-    await mongoose.connect(MONGO_URI);
-    console.log("✅ Conectado a MongoDB");
+await mongoose.connect(MONGO_URI);
+console.log("✅ Conectado a MongoDB");
 
-    // Limpiar colecciones
-    await Player.deleteMany({});
-    await Tournament.deleteMany({});
-    console.log("🧹 Colecciones limpiadas");
+// Limpiar colecciones
+await Player.deleteMany({});
+await Tournament.deleteMany({});
+console.log("🧹 Colecciones limpiadas");
 
-    // Insertar jugadores SIN _id
-    const cleanedPlayers = data.players.map(({ id, ...rest }) => ({
-      ...rest,
-      playerId: id // renombramos el id de tu JSON
-    }));
-    console.log(cleanedPlayers[0]);
-    await Player.insertMany(cleanedPlayers);
+// Insertar jugadores, sin preocuparse por _id
+const cleanedPlayers = data.players.map(({ id, ...rest }) => ({
+  ...rest,
+  playerId: id // guardamos el ID original
+}));
 
-    // Insertar torneos
-    await Tournament.insertMany(data.tournaments);
+// 1️⃣ Insertar jugadores
+const insertedPlayers = await Player.insertMany(cleanedPlayers);
 
-    console.log("📦 Datos insertados correctamente");
-    await mongoose.connection.close();
-    console.log("🔌 Conexión cerrada");
-  } catch (error) {
-    console.error("❌ Error al importar datos:", error);
-    process.exit(1);
+// 2️⃣ Crear mapping id viejo → _id Mongo
+const oldToNewIdMap: Record<number, mongoose.Types.ObjectId> = {};
+insertedPlayers.forEach((player, i) => {
+  const { playerId } = cleanedPlayers[i];
+  if (playerId !== undefined) {
+    oldToNewIdMap[Number(playerId)] = player._id;
   }
-}
+});
 
+
+// 3️⃣ Actualizar torneos con los nuevos _id
+const cleanedTournaments = data.tournaments.map(t => ({
+  ...t,
+  players: t.players.map(oldId => oldToNewIdMap[oldId])
+}));
+
+// 4️⃣ Insertar torneos
+await Tournament.insertMany(cleanedTournaments);
+
+
+console.log("📦 Datos insertados correctamente");
+await mongoose.connection.close();
+console.log("🔌 Conexión cerrada");
+
+
+} catch (error) {
+console.error("❌ Error al importar datos:", error);
+process.exit(1);
+}
+}
 
 importData();

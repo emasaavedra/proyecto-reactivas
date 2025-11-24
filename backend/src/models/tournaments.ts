@@ -6,7 +6,7 @@ const tournamentSchema: Schema = new Schema(
     TournamentID: { type: Number },
     Year: { type: Number },
     tournament: { type: String, required: true },
-    players: { type: [Number], default: [] }
+    players: [{ type: mongoose.Schema.Types.ObjectId, ref: "Player" }],
   },
   { timestamps: true }
 );
