@@ -18,7 +18,6 @@ const router = createBrowserRouter([
   {
     element: <App />,
     children: [
-      // Rutas públicas (accesibles sin login)
       { path: "/", element: <Home /> },
       { 
         path: "/login", 
@@ -29,12 +28,10 @@ const router = createBrowserRouter([
         ) 
       },
       
-      // Rutas públicas de visualización
       { path: "/players", element: <Player_list /> },
       { path: "/tournaments", element: <Tournament_list /> },
       { path: "/leaderboard", element: <Leaderboard /> },
       
-      // Rutas protegidas (requieren autenticación)
       { 
         path: "/packs", 
         element: (

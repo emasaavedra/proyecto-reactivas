@@ -42,7 +42,6 @@ export default function Packs() {
       const response = await addPlayersToUser(newPack.players.map(p => p.id));
       startCooldown();
       
-      // Actualizar localStorage con el nuevo contador
       const currentUser = localStorage.getItem("currentUser");
       if (currentUser) {
         const userData = JSON.parse(currentUser);
@@ -50,7 +49,6 @@ export default function Packs() {
         localStorage.setItem("currentUser", JSON.stringify(userData));
       }
 
-      // Disparar evento para actualizar el usuario en toda la app
       window.dispatchEvent(new Event("userUpdated"));
     } catch (error) {
       console.error("Error opening pack:", error);

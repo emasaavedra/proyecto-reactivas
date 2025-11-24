@@ -15,7 +15,6 @@ export default function App() {
     };
     fetchUser();
 
-    // Escuchar evento de actualización de usuario
     const handleUserUpdate = () => {
       fetchUser();
     };

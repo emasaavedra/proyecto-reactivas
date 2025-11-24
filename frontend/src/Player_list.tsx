@@ -6,7 +6,7 @@ import PlayerModal from "./components/playerModal";
 import "./Player_list.css";
 import usePlayerState from "./stores/State";
 import { getStatRange, getCardRarity, getPlayerRating, type CardRarity } from "./utils/stats";
-import { Button, ButtonGroup, Chip } from "@mui/material";
+import { Button, Chip } from "@mui/material";
 
 
 function Player_list() {
@@ -30,7 +30,6 @@ function Player_list() {
     p=> p.tournament === selectedPlayer.tournament
   ) : [];
 
-  // Filtrar jugadores por rareza
   let filteredPlayers = players.filter(p => {
     if (rarityFilter === "Todas") return true;
     const rating = getPlayerRating(p);
@@ -38,7 +37,6 @@ function Player_list() {
     return rarityInfo.rarity === rarityFilter;
   });
 
-  // Ordenar por rating
   if (sortOrder !== "none") {
     filteredPlayers = [...filteredPlayers].sort((a, b) => {
       const ratingA = getPlayerRating(a);

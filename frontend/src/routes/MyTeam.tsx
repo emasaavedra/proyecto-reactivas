@@ -26,7 +26,6 @@ export default function MyTeam() {
     ? getStatRange(players, "rating")
     : { min: 0, max: 1 };
 
-  // Filtrar por rareza
   const filteredPlayers = players.filter(p => {
     if (rarityFilter === "Todas") return true;
     const rating = getPlayerRating(p);
@@ -34,7 +33,6 @@ export default function MyTeam() {
     return rarityInfo.rarity === rarityFilter;
   });
 
-  // Ordenar por rating
   const sortedPlayers = [...filteredPlayers].sort((a, b) => {
     const ratingA = getPlayerRating(a);
     const ratingB = getPlayerRating(b);
@@ -80,7 +78,7 @@ export default function MyTeam() {
       </div>
     ) : (
       <>
-        {/* Botones de Ordenamiento */}
+        {/* ordenar */}
         <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center" }}>
           <Button 
             variant={sortOrder === "desc" ? "contained" : "outlined"}
@@ -98,7 +96,7 @@ export default function MyTeam() {
           </Button>
         </div>
 
-        {/* Filtros por Rareza */}
+        {/* Filtros */}
         <div style={{ marginBottom: "1.5rem", display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center" }}>
           <Button 
             variant={rarityFilter === "Todas" ? "contained" : "outlined"}

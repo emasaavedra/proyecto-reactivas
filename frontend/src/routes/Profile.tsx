@@ -24,7 +24,6 @@ export default function Profile() {
   const fetchPlayers = usePlayerState(state => state.fetchPlayers);
 
   useEffect(() => {
-    // Forzar recarga desde el servidor en cada visita
     authService.restoreLogin().then(currentUser => {
       if (!currentUser) {
         navigate("/login");
@@ -33,7 +32,6 @@ export default function Profile() {
       }
     });
     
-    // Cargar jugadores para obtener equipos
     if (players.length === 0) {
       fetchPlayers();
     }
@@ -58,13 +56,10 @@ export default function Profile() {
     try {
       await updateFavoriteTeam(teamName);
       
-      // Actualizar el usuario local
       const updatedUser = await authService.restoreLogin();
       if (updatedUser) {
         setUser(updatedUser);
-        // Actualizar localStorage
         localStorage.setItem("currentUser", JSON.stringify(updatedUser));
-        // Disparar evento para actualizar navbar
         window.dispatchEvent(new Event("userUpdated"));
       }
       
@@ -74,7 +69,6 @@ export default function Profile() {
     }
   };
 
-  // Obtener lista única de equipos
   const uniqueTeams = Array.from(new Set(players.map(p => p.team).filter(Boolean))).sort();
 
   return (

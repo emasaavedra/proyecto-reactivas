@@ -13,7 +13,6 @@ function safeNum(value: any, decimals = 2) {
 }
 
 function Player({ player, ratingRange }: Props) {
-  // Obtener el rating (calculado si es necesario)
   const rating = getPlayerRating(player);
 
   const rarityInfo = getCardRarity(
