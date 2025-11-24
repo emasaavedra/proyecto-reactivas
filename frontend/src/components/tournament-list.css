@@ -1,0 +1,21 @@
+.pretty-btn {
+  padding: 8px 16px;
+  background-color: #4A90E2;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.pretty-btn:hover {
+  background-color: #357ABD;
+  transform: translateY(-2px);
+}
+
+.pretty-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}

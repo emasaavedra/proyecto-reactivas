@@ -2,11 +2,11 @@ import type { IPlayer as PlayerType } from "../types/Player";
 import "./player.css";
 import { getStatColor } from "../utils/stats";
 
-import DuelistIcon from "../../public/icons/duelistSymbol.webp";
-import InitiatorIcon from "../../public/icons/initiatorSymbol.webp";
-import ControllerIcon from "../../public/icons/controllerSymbol.webp";
-import SentinelIcon from "../../public/icons/sentinelSymbol.webp";
-import FlexIcon from "../../public/icons/wildcardSymbol.png";
+import DuelistIcon from "/icons/duelistSymbol.webp?url";
+import InitiatorIcon from "/icons/initiatorSymbol.webp?url";
+import ControllerIcon from "/icons/controllerSymbol.webp?url";
+import SentinelIcon from "/icons/sentinelSymbol.webp?url";
+import FlexIcon from "/icons/wildcardSymbol.png?url";
 
 
 type Props = {
