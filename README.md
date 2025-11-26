@@ -356,5 +356,282 @@ npx playwright show-report
 La aplicación ValoFantasy se encuentra desplegada en:
 
 ```
-fullstack.dcc.uchile.cl:<puerto-asignado>
+https://fullstack.dcc.uchile.cl:7017
 ```
+
+---
+
+## 🚀 Guía de Deployment en Servidor DCC
+
+### Información del Servidor
+
+- **Host**: `fullstack.dcc.uchile.cl`
+- **Puerto SSH**: `219`
+- **Puerto Aplicación**: `7017`
+- **Usuario**: `fullstack`
+- **Directorio**: `~/valofantasy`
+
+### Variables de Entorno (Producción)
+
+Crear archivo `backend/.env` con las siguientes variables:
+
+```bash
+# MongoDB Connection
+MONGODB_URI=mongodb://fulls:fulls@fullstack.dcc.uchile.cl:27019/fullstack?authSource=admin
+
+# Server Configuration
+PORT=7017
+NODE_ENV=production
+HOST=0.0.0.0
+
+# JWT Secret
+JWT_SECRET=<tu-secret-seguro>
+```
+
+### Pasos para Deploy
+
+#### 1. Preparar Rama de Deploy
+
+```bash
+# Crear y cambiar a rama deploy
+git checkout -b deploy
+
+# Asegurarse de tener los últimos cambios
+git pull origin main
+```
+
+#### 2. Configurar Scripts de Build
+
+Verificar que `backend/package.json` tenga estos scripts:
+
+```json
+{
+  "scripts": {
+    "build": "tsc",
+    "build:ui": "cd ../frontend && npm run build && xcopy /E /I /Y dist ..\\backend\\dist",
+    "start": "node dist/index.js"
+  }
+}
+```
+
+**Nota para Windows**: El script usa `xcopy`. En Linux/Mac usar:
+```json
+"build:ui": "cd ../frontend && npm run build && cp -r dist ../backend/dist"
+```
+
+#### 3. Compilar Frontend y Backend
+
+```bash
+# Desde la carpeta backend
+cd backend
+
+# Compilar frontend y copiar a backend/dist
+npm run build:ui
+
+# Compilar backend TypeScript a JavaScript
+npm run build
+```
+
+#### 4. Subir Archivos al Servidor
+
+```bash
+# Subir todo el directorio dist (incluye frontend + backend compilado)
+scp -P219 -r dist fullstack@fullstack.dcc.uchile.cl:valofantasy/
+
+# Subir package.json y .env
+scp -P219 package.json fullstack@fullstack.dcc.uchile.cl:valofantasy/
+scp -P219 .env fullstack@fullstack.dcc.uchile.cl:valofantasy/
+```
+
+#### 5. Instalar Dependencias en el Servidor
+
+```bash
+# Conectar al servidor
+ssh -p 219 fullstack@fullstack.dcc.uchile.cl
+
+# Ir al directorio de la aplicación
+cd valofantasy
+
+# Instalar solo dependencias de producción
+npm install --production
+
+# O instalar todas las dependencias
+npm install
+```
+
+#### 6. Importar Datos a MongoDB (Primera vez)
+
+```bash
+# Asegurarse de estar en el directorio valofantasy
+cd ~/valofantasy
+
+# Ejecutar script de importación
+npm run import
+```
+
+**Nota**: El script `importData.ts` debe:
+- Leer `MONGODB_URI` desde variables de entorno
+- Eliminar índices conflictivos (`id_1`) antes de importar
+- Cargar jugadores y torneos desde archivos JSON
+
+#### 7. Iniciar el Servidor
+
+```bash
+# Modo simple (se detiene al cerrar SSH)
+npm start
+
+# Modo background con nohup
+nohup npm start > output.log 2>&1 &
+
+# Ver logs en tiempo real
+tail -f output.log
+
+# Detener el servidor
+ps aux | grep node
+kill <PID>
+```
+
+**Alternativa con PM2** (recomendado para producción):
+
+```bash
+# Instalar PM2 globalmente
+npm install -g pm2
+
+# Iniciar aplicación
+pm2 start dist/index.js --name valofantasy
+
+# Ver logs
+pm2 logs valofantasy
+
+# Reiniciar
+pm2 restart valofantasy
+
+# Detener
+pm2 stop valofantasy
+
+# Auto-inicio en reboot del servidor
+pm2 startup
+pm2 save
+```
+
+### Configuración del Backend para Producción
+
+#### `backend/src/index.ts` - CORS Dinámico
+
+```typescript
+const allowedOrigins = process.env.NODE_ENV === 'production' 
+  ? ['https://fullstack.dcc.uchile.cl:7017']
+  : ['http://localhost:5173'];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
+```
+
+#### Servir Frontend Estático
+
+```typescript
+// Servir archivos estáticos del frontend
+app.use(express.static('dist'));
+
+// Catch-all para SPA routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
+```
+
+### Configuración del Frontend para Producción
+
+#### Rutas de API Relativas
+
+Todos los servicios deben usar rutas relativas en producción:
+
+```typescript
+// ❌ Incorrecto
+const baseUrl = "http://localhost:3001/api/players";
+
+// ✅ Correcto
+const baseUrl = "/api/players";
+```
+
+Esto permite que el frontend use la misma URL base que el servidor.
+
+### Solución de Problemas Comunes
+
+#### Error: "Cannot read properties of null"
+
+**Causa**: Datos de MongoDB con valores `null` en arrays.
+
+**Solución**: Filtrar valores null en el backend:
+
+```typescript
+// En routes/users.ts
+user.myPlayers = user.myPlayers.filter(id => id != null);
+```
+
+#### Error: "Cast to ObjectId failed"
+
+**Causa**: Frontend enviando objetos completos en lugar de IDs.
+
+**Solución**: Asegurarse de que el modelo Player incluya `_id`:
+
+```typescript
+playerSchema.set("toJSON", {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString();
+    returnedObject._id = returnedObject._id.toString(); // ✅ Mantener _id
+    delete returnedObject.__v;
+  },
+});
+```
+
+#### Cooldown muy largo para pruebas
+
+**Ubicación**: `frontend/src/stores/cooldownStore.ts`
+
+```typescript
+// Cambiar de 5 minutos a 5 segundos para testing
+const COOLDOWN = 5 * 1000; // 5 segundos
+```
+
+### Comandos Útiles de Mantenimiento
+
+```bash
+# Ver logs del servidor
+ssh -p 219 fullstack@fullstack.dcc.uchile.cl
+cd valofantasy
+tail -f output.log
+
+# Actualizar aplicación después de cambios
+scp -P219 -r dist fullstack@fullstack.dcc.uchile.cl:valofantasy/
+ssh -p 219 fullstack@fullstack.dcc.uchile.cl "cd valofantasy && pm2 restart valofantasy"
+
+# Verificar estado de MongoDB
+ssh -p 219 fullstack@fullstack.dcc.uchile.cl
+mongosh mongodb://fulls:fulls@localhost:27019/fullstack --authenticationDatabase admin
+
+# Limpiar colección de usuarios (testing)
+db.users.deleteMany({})
+
+# Ver todos los usuarios
+db.users.find().pretty()
+```
+
+### Checklist de Deployment
+
+- [ ] Rama `deploy` creada y actualizada
+- [ ] Variables de entorno configuradas en `backend/.env`
+- [ ] Scripts de build configurados en `package.json`
+- [ ] Frontend compilado con `npm run build:ui`
+- [ ] Backend compilado con `npm run build`
+- [ ] Archivos subidos al servidor vía SCP
+- [ ] Dependencias instaladas en servidor
+- [ ] MongoDB accesible y datos importados
+- [ ] Servidor iniciado con `npm start` o `pm2`
+- [ ] Aplicación accesible en `https://fullstack.dcc.uchile.cl:7017`
+- [ ] Login/registro funcionando correctamente
+- [ ] Apertura de packs operativa
+- [ ] Sistema de equipo con drag & drop funcional
+
+---
