@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { User } from "../types/User";
 
-const baseUrl = "http://localhost:3001/api";
+const baseUrl = "/api";
 
 // Configurar axios para enviar cookies
 axios.defaults.withCredentials = true;

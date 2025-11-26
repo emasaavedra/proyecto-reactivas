@@ -17,7 +17,6 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 
 export default function Profile() {
   const [user, setUser] = useState<User | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0);
   const [openTeamDialog, setOpenTeamDialog] = useState(false);
   const navigate = useNavigate();
   const players = usePlayerState(state => state.players);
@@ -35,7 +34,7 @@ export default function Profile() {
     if (players.length === 0) {
       fetchPlayers();
     }
-  }, [navigate, refreshKey, players.length, fetchPlayers]);
+  }, [navigate, players.length, fetchPlayers]);
 
   if (!user) {
     return (

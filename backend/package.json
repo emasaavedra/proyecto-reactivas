@@ -4,7 +4,9 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "start \"MongoDB\" powershell -NoExit -Command \"& 'C:\\Program Files\\MongoDB\\Server\\8.2\\bin\\mongod.exe' --dbpath 'C:\\data\\db'\" && ts-node src/index.ts",
+    "build:ui": "cd ../frontend && npm run build && xcopy /E /I /Y dist ..\\backend\\dist",
+    "start": "node dist/index.js",
+    "start:dev": "start \"MongoDB\" powershell -NoExit -Command \"& 'C:\\Program Files\\MongoDB\\Server\\8.2\\bin\\mongod.exe' --dbpath 'C:\\data\\db'\" && ts-node src/index.ts",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "seed": "ts-node src/seed.ts",
     "import": "ts-node src/scripts/importData.ts"

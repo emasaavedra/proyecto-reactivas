@@ -1,4 +1,5 @@
 export type IPlayer = {
+    _id?: string,
     id: number,
     name: string,
     tournament: string,

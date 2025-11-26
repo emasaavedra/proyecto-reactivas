@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-const COOLDOWN = 5 * 60 * 1000; // 5 min
+const COOLDOWN = 5 * 1000; // 5 seconds
 
 interface CooldownState {
   lastPackTime: number | null;

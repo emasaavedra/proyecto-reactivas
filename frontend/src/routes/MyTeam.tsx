@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { getUserPlayers } from "../services/userService";
-import playersService from "../services/playersService";
 import Player from "../components/player";
 import PlayerModal from "../components/playerModal";
 import type { IPlayer } from "../types/Player";
@@ -39,8 +38,9 @@ export default function MyTeam() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   useEffect(() => {
-    getUserPlayers().then(async (ids) => {
-      const fetched = await Promise.all(ids.map(id => playersService.getById(id)));
+    getUserPlayers().then(async (playersData) => {
+      // playersData ya son objetos completos de jugadores, no IDs
+      const fetched = playersData;
 
       const map: Record<string, number> = {};
       fetched.forEach((p, i) => (map[p.id] = i));
@@ -100,6 +100,28 @@ export default function MyTeam() {
 
     setPlayers(newPlayers);
     setSlots([null, null, null, null, null]);
+  };
+
+  const handleEmptySlotClick = (slotIndex: number) => {
+    // Si el slot ya tiene jugador, no hacer nada
+    if (slots[slotIndex]) return;
+    
+    // Si no hay jugadores disponibles, no hacer nada
+    if (players.length === 0) return;
+
+    // Seleccionar un jugador aleatorio del inventario
+    const randomIndex = Math.floor(Math.random() * players.length);
+    const randomPlayer = players[randomIndex];
+
+    // Agregar el jugador al slot
+    const newSlots = [...slots];
+    newSlots[slotIndex] = randomPlayer;
+
+    // Remover el jugador del inventario
+    const newPlayers = players.filter((p) => p.id !== randomPlayer.id);
+
+    setPlayers(newPlayers);
+    setSlots(newSlots);
   };
 
 
@@ -299,7 +321,12 @@ export default function MyTeam() {
                 ratingRange={ratingRange}
                 setSelectedPlayer={setSelectedPlayer}
               >
-                <DroppableSlot index={i} player={slots[i]} ratingRange={ratingRange}/>
+                <DroppableSlot 
+                  index={i} 
+                  player={slots[i]} 
+                  ratingRange={ratingRange}
+                  onEmptySlotClick={handleEmptySlotClick}
+                />
               </DraggableSlotWrapper>
             ))}
           </div>

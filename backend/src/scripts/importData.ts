@@ -4,8 +4,11 @@ import path from "path";
 import Player, { IPlayer } from "../models/player";
 import Tournament from "../models/tournaments";
 import ITournament from "../models/ITournament";
+import dotenv from "dotenv";
 
-const MONGO_URI = "mongodb://localhost:27017/valorantdb";
+dotenv.config();
+
+const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/valorantdb";
 
 type TipoJson = {
 players: IPlayer[],
@@ -22,6 +25,21 @@ console.log("Primer jugador JSON:", data.players[0]);
 
 await mongoose.connect(MONGO_URI);
 console.log("✅ Conectado a MongoDB");
+
+// Eliminar índices problemáticos
+try {
+  await Player.collection.dropIndex("id_1");
+  console.log("🗑️ Índice 'id_1' de players eliminado");
+} catch (e) {
+  console.log("ℹ️ Índice 'id_1' de players no existía");
+}
+
+try {
+  await Tournament.collection.dropIndex("id_1");
+  console.log("🗑️ Índice 'id_1' de tournaments eliminado");
+} catch (e) {
+  console.log("ℹ️ Índice 'id_1' de tournaments no existía");
+}
 
 // Limpiar colecciones
 await Player.deleteMany({});

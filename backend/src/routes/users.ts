@@ -12,9 +12,12 @@ usersRouter.post("/me/players", withUser, async (req, res) => {
   const user = await User.findById(userId);
   if (!user) return res.status(404).json({ error: "User not found" });
 
+  // Limpiar valores null del array existente
+  user.myPlayers = user.myPlayers.filter(id => id != null);
+  
   // Agregar nuevos jugadores (sin duplicados por _id)
   const existingIds = new Set(user.myPlayers.map(id => id.toString()));
-  const newPlayerIds = players.filter((id: string) => !existingIds.has(id));
+  const newPlayerIds = players.filter((id: string) => id && !existingIds.has(id));
   
   user.myPlayers = [...user.myPlayers, ...newPlayerIds];
   user.cards = user.myPlayers.length;
@@ -35,6 +38,11 @@ usersRouter.get("/me/players", withUser, async (req, res) => {
   const user = await User.findById(userId).populate("myPlayers");
   console.log(user);
   if (!user) return res.status(404).json({ error: "User not found" });
+  
+  // Limpiar valores null del array
+  user.myPlayers = user.myPlayers.filter(id => id != null);
+  await user.save();
+  
   console.log("Estoy devolviendo mis players :D");
   console.log("Mis Players", user.myPlayers);
   res.json({ players: user.myPlayers });

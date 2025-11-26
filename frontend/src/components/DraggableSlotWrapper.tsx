@@ -89,21 +89,30 @@ type DroppableSlotProps = {
   index: number;
   player: IPlayer | null;
   ratingRange: { min: number; max: number } | null;
+  onEmptySlotClick?: (index: number) => void;
 };
 
 
-export function DroppableSlot({ index, player, ratingRange }: DroppableSlotProps) {
+export function DroppableSlot({ index, player, ratingRange, onEmptySlotClick }: DroppableSlotProps) {
     const { setNodeRef, isOver } = useDroppable({
       id: `slot-${index}`,
       data: { slotIndex: index },
     });
 
+    const handleClick = () => {
+      if (!player && onEmptySlotClick) {
+        onEmptySlotClick(index);
+      }
+    };
+
     return (
       <div
         ref={setNodeRef}
+        onClick={handleClick}
         style={{
           border: isOver ? "3px solid white" : "3px solid transparent",
           padding: "4px",
+          cursor: !player ? "pointer" : "default",
         }}
       >
         <Player player={player} ratingRange={(ratingRange) ? ratingRange : {min: 10, max: 280}} />

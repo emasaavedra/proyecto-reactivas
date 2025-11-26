@@ -38,8 +38,10 @@ export default function Packs() {
     try {
       const newPack = await packsService.openDefaultPack();
       setPack(newPack);
-      console.log(newPack);
-      const response = await addPlayersToUser(newPack.players.map(p => p.id));
+      console.log("Pack obtenido:", newPack);
+      const playerIds = newPack.players.map(p => p._id);
+      console.log("IDs a enviar:", playerIds);
+      const response = await addPlayersToUser(playerIds);
       startCooldown();
       
       const currentUser = localStorage.getItem("currentUser");
